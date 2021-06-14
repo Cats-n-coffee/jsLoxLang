@@ -1,0 +1,12 @@
+{
+  "name": "jsloxlang",
+  "version": "1.0.0",
+  "private": "true",
+  "description": "Lox language from Crafting Interpreters in Javascript",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Lucie Alonso",
+  "license": "ISC"
+}
