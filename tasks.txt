@@ -1,0 +1,3 @@
+Scanner/ Lexer
+[] figure out how to grab the input
+[] split the code at the appropriate places
