@@ -6,9 +6,12 @@ which should be the raw input given by the user
 const fs = require('fs');
 const readline = require('readline');
 
+const { Scanner } = require('./scanner');
+
 class JsLox {
     constructor(rawCode) {
         this.rawCode = rawCode;
+        this.hadError = false;
     }
 // Do extra check to ensure only a string is contained in the array?
     main() {
@@ -33,8 +36,12 @@ class JsLox {
 
     runFile(givenArg) {
         console.log('inside the runfile function', givenArg)
+        if (this.hadError === true) {
+            process.exit(0)
+        }
         const fileContents = fs.readFileSync(givenArg, 'utf-8');
         console.log('reading the file', fileContents)
+        this.run(fileContents)
     }
 
     runPrompt() {
@@ -52,6 +59,8 @@ class JsLox {
         rl.on("line", userInput => {
             inputStr += userInput;
             process.stdout.write(inputStr)
+            this.run(inputStr);
+            this.hadError = false;
         })
         
         rl.on("close", () => {
@@ -60,6 +69,26 @@ class JsLox {
             process.exit(0)
         })
         
+    }
+
+    run(source) {
+        const scanner = new Scanner(source);
+        let tokens = scanner.scanTokens()
+
+        console.log('print in run',tokens)
+        for (let i = 0; i< tokens.length; i += 1) {
+            console.log(tokens[i])
+        }
+    }
+
+    error(line, message) {
+        this.report(line, "", message)
+    }
+
+    report(line, where, message) {
+        line = parseInt(line)
+        console.error(`Line: ${line} Error: ${where}: ${message}`);
+        this.hadError = true;
     }
 }
 
