@@ -1,11 +1,11 @@
 /*
 This class create the tokens/lexemes
 */
-//const { tokenType } = require('./tokenType');
+const { tokenType } = require('./tokenType');
 
 class Token {
     constructor(type, lexeme, literal, line) {
-        this.type = type;
+        this.type = tokenType[type];
         this.lexeme = lexeme;
         this.literal = literal;
         this.line = line;

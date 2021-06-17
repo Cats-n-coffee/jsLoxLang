@@ -72,7 +72,7 @@ class JsLox {
     }
 
     run(source) {
-        const scanner = new Scanner(source);
+        const scanner = new Scanner(source, this);
         let tokens = scanner.scanTokens()
 
         console.log('print in run',tokens)
@@ -81,7 +81,8 @@ class JsLox {
         }
     }
 
-    static error(line, message) {
+    error(line, message) {
+        console.log('in the error method in jslox')
         this.report(line, "", message)
     }
 
@@ -97,5 +98,3 @@ jsLoxInstance.main();
 
 // https://stackoverflow.com/questions/61394928/get-user-input-through-node-js-console
 // https://stackoverflow.com/questions/17837147/user-input-in-node-js
-
-module.exports = { JsLox }

@@ -7,6 +7,9 @@ This is my version of the Lox language from Crafting Interpreters. My version is
 Takes the code and splits it into tokens, that will then be given to the parser. 
 It reads strings raw source code and does its job of creating tokens.
 
+The user input is always added to the inputString, but only valid characters that deserve the lexer's attention
+will be considered as tokens and created as such.
+
 ### JsLox class
 1 - Main method: "directs" the given input: uses the array length to return an error, read or run the prompt.
   - runFile method: read the file, transforms the bytes to a string. Needed if we read code that's already written?
