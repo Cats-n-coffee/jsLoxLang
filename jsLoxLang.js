@@ -77,11 +77,11 @@ class JsLox {
 
         console.log('print in run',tokens)
         for (let i = 0; i< tokens.length; i += 1) {
-            console.log(tokens[i])
+            console.log('for loop in run', tokens[i])
         }
     }
 
-    error(line, message) {
+    static error(line, message) {
         this.report(line, "", message)
     }
 
@@ -97,3 +97,5 @@ jsLoxInstance.main();
 
 // https://stackoverflow.com/questions/61394928/get-user-input-through-node-js-console
 // https://stackoverflow.com/questions/17837147/user-input-in-node-js
+
+module.exports = { JsLox }

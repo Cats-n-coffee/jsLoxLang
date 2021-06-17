@@ -1,3 +1,3 @@
 Scanner/ Lexer
-[] figure out how to grab the input
+[] command line args
 [] split the code at the appropriate places
