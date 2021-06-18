@@ -1,6 +1,7 @@
 /* This is the scanner class
 */
 const { tokenType } = require('./tokenType');
+const { keywords } = require('./keywordsMap');
 const { Token } = require('./token');
 
 class Scanner {
@@ -31,7 +32,6 @@ class Scanner {
 
     scanToken() {
         let character = this.advance();
-        console.log('in scantoken', character)
         switch(character) {
             case "(": this.addToken(tokenType.LEFT_PAREN); break;
             case ")": this.addToken(tokenType.RIGHT_PAREN); break;
@@ -54,8 +54,8 @@ class Scanner {
                     }else {
                         this.addToken(tokenType.SLASH)
                     }; break;
-            case " ": break;
-            case "\r": break;
+            case " ": 
+            case "\r": 
             case "\t": break;
             case "\n": this.line++; break;
             case '"': this.stringToken(); break; 
@@ -71,6 +71,7 @@ class Scanner {
                     this.loxInstance.error(this.line, "Unexpected character.");
                 }
                 console.log('in default switch, there is an error', this.line);
+                // Have the following error statmemnt inside an else? check with main class
                 this.loxInstance.error(this.line, "Unexpected character.");
             break;
         }
@@ -170,8 +171,14 @@ class Scanner {
         while (this.isAlphaNumeric(this.peek())) {
             this.advance();
         }
+        let text = this.source.substring(this.start, this.current);
+        var type = keywords[text];
 
-        this.addToken(tokenType.IDENTIFIER);
+        if (type === null || type === undefined) {
+            type = tokenType.IDENTIFIER;
+        }
+        console.log('type is ', type)
+        this.addToken(type);
     }
 
     // Checks if the character is in the alphabet (lower or upper case) or _
