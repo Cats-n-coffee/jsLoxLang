@@ -6,7 +6,7 @@ which should be the raw input given by the user
 const fs = require('fs');
 const readline = require('readline');
 
-const { Scanner } = require('./scanner');
+const { Scanner } = require('./src/scanner');
 
 class JsLox {
     constructor(rawCode) {

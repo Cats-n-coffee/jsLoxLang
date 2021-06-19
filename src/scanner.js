@@ -26,10 +26,12 @@ class Scanner {
         return this.tokens;
     }
 
+    // Checks if we have reached the end of the raw input string
     isAtEnd() {
         return this.current >= this.source.length;
     }
 
+    // Checks each character in the input string and determines the token type
     scanToken() {
         let character = this.advance();
         switch(character) {
@@ -68,15 +70,17 @@ class Scanner {
                     this.identifier();
                 }
                 else {
+                    console.log('in default switch, there is an error', this.line);
                     this.loxInstance.error(this.line, "Unexpected character.");
-                }
-                console.log('in default switch, there is an error', this.line);
+                } 
                 // Have the following error statmemnt inside an else? check with main class
-                this.loxInstance.error(this.line, "Unexpected character.");
+                //this.loxInstance.error(this.line, "Unexpected character.");
             break;
         }
     }
 
+    // In case the currently checked character is directly followed by another one,
+    // checks what kind of token we have (2 characters tokens)
     match(expected) {
         if (this.isAtEnd()) return false;
         if (this.source.charAt(this.current) != expected) return false;
@@ -178,7 +182,8 @@ class Scanner {
             type = tokenType.IDENTIFIER;
         }
         console.log('type is ', type)
-        this.addToken(type);
+        this.addTokenToArr(type, text); // Do we need only the type? if we do: this.addToken will be sufficient
+        // Do we need the literal value for identifiers?
     }
 
     // Checks if the character is in the alphabet (lower or upper case) or _

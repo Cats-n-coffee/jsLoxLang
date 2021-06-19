@@ -6,6 +6,7 @@ This is my version of the Lox language from Crafting Interpreters. My version is
 
 Takes the code and splits it into tokens, that will then be given to the parser. 
 It reads strings raw source code and does its job of creating tokens.
+Like a finite automata(?) or DFA(?), it uses regular grammar. Recognizes the lexemes and matches them with tokens.
 
 The user input is always added to the inputString, but only valid characters that deserve the lexer's attention
 will be considered as tokens and created as such.
@@ -30,3 +31,8 @@ will be considered as tokens and created as such.
   - Pattern: a rule that describes the token. (e.g: Identifier -> letter(letter.digit)*). Uses regex patterns?
   - Lexeme: sequence of characters that matches the pattern. (e.g: 60, runFile, runPrompt, +, ...)
 )
+
+## Parser
+
+It uses context-free grammar. Matches rules but does not care about what is around the given input ("context-free",
+it does not care about the context).
