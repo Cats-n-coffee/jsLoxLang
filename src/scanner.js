@@ -106,9 +106,7 @@ class Scanner {
 
     // Creates a token with the information collected: token type, literal, line, lexeme
     addTokenToArr(type, literal) {
-        console.log('in addtokentoarr', type, 'literal',literal)
         const text = this.source.substring(this.start, this.current);
-        console.log('in addtokentoarr', text)
         this.tokens.push(new Token(type, text, literal, this.line))
     }
 

@@ -7,6 +7,7 @@ const fs = require('fs');
 const readline = require('readline');
 
 const { Scanner } = require('./src/scanner');
+const { Parser } = require('./src/parser');
 
 class JsLox {
     constructor(rawCode) {
@@ -73,7 +74,11 @@ class JsLox {
 
     run(source) {
         const scanner = new Scanner(source, this);
-        let tokens = scanner.scanTokens()
+        let tokens = scanner.scanTokens();
+
+        let parser = new Parser(tokens);
+        let expr = parser.parse();
+        console.log('expression parsed in JsLox', expr);
 
         console.log('print in run',tokens)
         for (let i = 0; i< tokens.length; i += 1) {

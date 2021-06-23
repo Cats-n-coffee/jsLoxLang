@@ -1,6 +1,6 @@
 # JsLoxLang
 
-This is my version of the Lox language from Crafting Interpreters. My version is in Javascript.
+This is my version of the Lox language from Crafting Interpreters in Javascript.
 
 ## Scanner / Lexer
 
@@ -34,5 +34,20 @@ will be considered as tokens and created as such.
 
 ## Parser
 
-It uses context-free grammar. Matches rules but does not care about what is around the given input ("context-free",
+It uses context-free grammar. Context-free grammar matches rules, but does not care about what is around the given input ("context-free",
 it does not care about the context).
+In this parser we use recursive decent parsing (or top-down parsing), which goes throught the lowest precedence expressions first ->
+treats the outermost expressions first then walks to the inside expressions (from big chunks to smallers chunks of code).
+"Recursive", because even finding a non-terminal grammar rule, it calls itself, hence recursive.
+
+### Navigating through the tokens in the parser
+
+There are a lot of helper methods to navigate and check where we are in the token array:
+  - advance : always checks if we have reached the last token, if we have not reached it -> move on to the next.
+  - previous: goes back to the previous token.
+  - peek: reads the current token.
+  - isAtEnd: checks the type of the token to be EOF, which is the closing token. It means we have reached the end of the array.
+  - check: checks the type of the current token, to be the same as the type passed in the argument.
+Each method return true/false or a token (previous or current). The advance method increments the current index.
+
+## AST (Abstract Syntax Tree)
