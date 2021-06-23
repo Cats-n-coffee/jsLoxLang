@@ -44,6 +44,7 @@ class Parser {
         return expr;
     }
 
+    // Checks for comparison tokens
     comparison() {
         var expr = this.term();
         console.log('inside comparison'.bgBlue, expr)
@@ -62,7 +63,7 @@ class Parser {
         while(this.match([tokenType.MINUS, tokenType.PLUS])) {
             const operator = this.previous();
             const right = this.factor();
-
+            console.log('inside term for plus or minus op'.cyan)
             expr = expression.binaryExpr(expr, operator, right);
         }
         return expr;
@@ -96,6 +97,7 @@ class Parser {
         if (this.match([tokenType.NIL])) return expression.literalExpr(null);
 
         if (this.match([tokenType.NUMBER, tokenType.STRING])) {
+            console.log('inside primary',expression.literalExpr(this.previous().literal))
             return expression.literalExpr(this.previous().literal)
         }
 
@@ -108,15 +110,15 @@ class Parser {
 
     // Matches the token types, checks if they correspond to the current token type
     match([...types]) {
-        console.log('match', types)
-        types.forEach(type => {
-            if (this.check(type)) {
-                this.advance()
-                console.log('inside foreach match'.bgGreen, type)
-                console.log('inside match loop'.bgGreen, this.peek().type)
+        for (let i = 0; i < types.length; i += 1) {
+            if (this.check(types[i])) {
+                this.advance();
+                console.log('inside foreach match argument'.bgGreen, types[i])
+                console.log('inside match loop current token'.bgGreen, this.peek().type)
+                console.log('inside match loop current token'.bgGreen, this.previous().type)
                 return true;
             }
-        })
+        }
         return false;
     }
 
@@ -135,15 +137,19 @@ class Parser {
 
     // "looks" at the current token and checks if the type matches
     check(type) {
-        if (this.isAtEnd()) return false;
+        if (this.isAtEnd()) return false; // If the current token is the last one (EOF) return false
+        console.log('inside check method'.cyan, this.peek().type)
         return this.peek().type === type;
     }
 
     // Consumes the current token
     advance() {
         if (!this.isAtEnd()) { // if isAtEnd is true, we invoke this.previous
+            console.log('in advance printing current'.magenta, this.current)
+            console.log('in advance printing current type'.magenta, this.peek().type)
             this.current++;
         }
+        console.log('in advance'.yellow, this.previous())
         return this.previous(); // The last token has EOF type, we do not need to consume it, so we go back one token
     }
 
