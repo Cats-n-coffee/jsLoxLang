@@ -8,18 +8,36 @@ const expression = {
     accept: function(){
         console.log('accept function')
     },
+
     binaryExpr: function(left, operator, right) {
-        console.log('in binary expression'.red, left + operator + right)
-        return left + operator + right;
+        console.log('left is', left, 'operator is', operator, 'right is', right)
+
+        const binaryObj = {
+            type: "binaryExpr",
+            left: left,
+            operator: operator,
+            right: right
+        }
+
+        console.log('in binaryExpr', binaryObj)
+        return binaryObj;
     },
+
     unaryExpr: function(operator, right) {
         console.log('in unary expression'.red, operator + right)
         return operator + right;
     },
+
     literalExpr: function(value) {
-        console.log('in literal expression'.red, value)
-        return value;
+
+        const literalObj = {
+            type: "literalExpr",
+            value: value
+        }
+
+        return literalObj;
     },
+
     groupingExpr: function(group) {
         console.log('in grouping expression'.red, group);
         return group

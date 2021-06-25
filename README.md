@@ -1,12 +1,16 @@
 # JsLoxLang
 
 This is my version of the Lox language from Crafting Interpreters in Javascript.
+I wrote most of my notes in this ReadMe, so this ReadMe shows what I understand from writing this interpreter,
+some definitions, some important notes from the author of Crafting Inpreters about the way certains parts are implemented, 
+as well as useful notes on how I implemented it in Js.
 
 ## Scanner / Lexer
 
 Takes the code and splits it into tokens, that will then be given to the parser. 
 It reads strings raw source code and does its job of creating tokens.
-Like a finite automata(?) or DFA(?), it uses regular grammar. Recognizes the lexemes and matches them with tokens.
+Like a finite automata or DFA, it uses regular grammar. Recognizes the lexemes and matches them with tokens. 
+So, like a DFA, it will either accept the lexeme (recognize it and create a token), or it will reject it.
 
 The user input is always added to the inputString, but only valid characters that deserve the lexer's attention
 will be considered as tokens and created as such.
@@ -51,3 +55,15 @@ There are a lot of helper methods to navigate and check where we are in the toke
 Each method return true/false or a token (previous or current). The advance method increments the current index.
 
 ## AST (Abstract Syntax Tree)
+
+For this AST in Js, the simplest way for me to create the syntax tree (the way my brain understood it), was to create an
+object that holds functions. Each function returns an object with the type of expression, the value and/or other useful information
+such as the operator.
+So if we print the tree, it would look like an object with nested objects.
+
+## Evaluating Expressions
+
+1- What kind of values do we produce?
+2- How do we organize those chunks of code?
+
+Each blob of code holds evaluation logic for each kind of expression we can parse.

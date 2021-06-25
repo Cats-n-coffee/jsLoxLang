@@ -27,3 +27,5 @@ mainFunction().testDecl();
 mainFunction().testExpr();
 test2Function().aExpr(mainFunction().aName);
 mainFunction().compare();
+
+// Factory function

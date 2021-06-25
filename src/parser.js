@@ -63,7 +63,7 @@ class Parser {
         while(this.match([tokenType.MINUS, tokenType.PLUS])) {
             const operator = this.previous();
             const right = this.factor();
-            console.log('inside term for plus or minus op'.cyan)
+        
             expr = expression.binaryExpr(expr, operator, right);
         }
         return expr;
@@ -97,7 +97,7 @@ class Parser {
         if (this.match([tokenType.NIL])) return expression.literalExpr(null);
 
         if (this.match([tokenType.NUMBER, tokenType.STRING])) {
-            console.log('inside primary',expression.literalExpr(this.previous().literal))
+            console.log('inside parser in primary precedence'.blue, expression.literalExpr(this.previous().literal))
             return expression.literalExpr(this.previous().literal)
         }
 
@@ -126,7 +126,7 @@ class Parser {
     consume(type, message) {
         if (this.check(type)) return this.advance();
         else {
-            console.log('error in consume', message)
+            console.log('error in consume'.bgRed, message)
         }
     }
 
@@ -149,7 +149,6 @@ class Parser {
             console.log('in advance printing current type'.magenta, this.peek().type)
             this.current++;
         }
-        console.log('in advance'.yellow, this.previous())
         return this.previous(); // The last token has EOF type, we do not need to consume it, so we go back one token
     }
 
