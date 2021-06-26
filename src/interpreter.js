@@ -1,6 +1,7 @@
 /*
 This file holds the interpreter class. 
 */
+const util = require('util');
 const { expression } = require('./ast');
 const color = require('colors');
 
@@ -10,7 +11,7 @@ class Interpreter {
 
     interpret(expr) {
         console.log('/////////////////////////////////////////////////'.bgBlue)
-        console.log('please, interpreter interpret'.bgRed, expr);
+        console.log('please, interpreter interpret'.bgRed, util.inspect(expr, false, null, true));
         console.log('/////////////////////////////////////////////////'.bgBlue)
         try {
             const value = this.evaluate(expr);
@@ -50,6 +51,12 @@ class Interpreter {
         console.log('inside getbinary in interpreter'.blue, expr, 'left value is '.blue, left, 'right value is '.blue, right)
 
         switch(expr.operator.type) {
+            case "GREATER": return left > right;
+            case "GREATER_EQUAL": return left >= right;
+            case "LESS": return left < right;
+            case "LESS_EQUAL": return left <= right;
+            case "BANG_EQUAL": return !this.isEqual(left, right);
+            case "EQUAL_EQUAL": return this.isEqual(left, right);
             case "MINUS": return left - right;
             case "PLUS": 
             console.log('inside addition looking for my datatype'.blue, typeof left, 'right'.blue, typeof right)
@@ -86,6 +93,13 @@ class Interpreter {
         if (obj === null) return false;
         if (obj.constructor == Boolean) return obj;
         return true;
+    }
+
+    isEqual(item1, item2) {
+        if (item1 === null && item2 === null) return true;
+        if (item1 === null) return false;
+        
+        return item1 == item2;
     }
 }
 
