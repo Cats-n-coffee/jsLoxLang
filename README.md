@@ -1,9 +1,7 @@
 # JsLoxLang
 
 This is my version of the Lox language from Crafting Interpreters in Javascript.
-I wrote most of my notes in this ReadMe, so this ReadMe shows what I understand from writing this interpreter,
-some definitions, some important notes from the author of Crafting Inpreters about the way certains parts are implemented, 
-as well as useful notes on how I implemented it in Js.
+I wrote most of my notes in this ReadMe, so this ReadMe shows what I understand from writing this interpreter, some definitions, some important notes from the author of Crafting Inpreters about the way certains parts are implemented, as well as useful notes on how I implemented it in Js.
 
 ## Scanner / Lexer
 
@@ -12,8 +10,7 @@ It reads strings raw source code and does its job of creating tokens.
 Like a finite automata or DFA, it uses regular grammar. Recognizes the lexemes and matches them with tokens. 
 So, like a DFA, it will either accept the lexeme (recognize it and create a token), or it will reject it.
 
-The user input is always added to the inputString, but only valid characters that deserve the lexer's attention
-will be considered as tokens and created as such.
+The user input is always added to the inputString, but only valid characters that deserve the lexer's attention will be considered as tokens and created as such.
 
 ### JsLox class
 1 - Main method: "directs" the given input: uses the array length to return an error, read or run the prompt.
@@ -38,10 +35,9 @@ will be considered as tokens and created as such.
 
 ## Parser
 
-It uses context-free grammar. Context-free grammar matches rules, but does not care about what is around the given input ("context-free",
-it does not care about the context).
-In this parser we use recursive decent parsing (or top-down parsing), which goes throught the lowest precedence expressions first ->
-treats the outermost expressions first then walks to the inside expressions (from big chunks to smallers chunks of code).
+The parser creates the AST.
+It uses context-free grammar. Context-free grammar matches rules of the grammar, but does not care about what is around the given input ("context-free",it does not care about the context).
+In this parser we use recursive decent parsing (or top-down parsing), which goes throught the lowest precedence expressions first -> treats the outermost expressions first then walks to the inside expressions (from big chunks to smallers chunks of code).
 "Recursive", because even finding a non-terminal grammar rule, it calls itself, hence recursive.
 
 ### Navigating through the tokens in the parser
@@ -56,9 +52,8 @@ Each method return true/false or a token (previous or current). The advance meth
 
 ## AST (Abstract Syntax Tree)
 
-For this AST in Js, the simplest way for me to create the syntax tree (the way my brain understood it), was to create an
-object that holds functions. Each function returns an object with the type of expression, the value and/or other useful information
-such as the operator.
+The AST shows the relationship between the tokens.
+For this AST in Js, the simplest way for me to create the syntax tree (the way my brain understood it), was to create an object that holds functions. Each function returns an object with the type of expression, the value and/or other useful information such as the operator.
 So if we print the tree, it would look like an object with nested objects.
 
 ## Evaluating Expressions

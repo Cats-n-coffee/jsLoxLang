@@ -9,7 +9,9 @@ class Interpreter {
     }
 
     interpret(expr) {
+        console.log('/////////////////////////////////////////////////'.bgBlue)
         console.log('please, interpreter interpret'.bgRed, expr);
+        console.log('/////////////////////////////////////////////////'.bgBlue)
         try {
             const value = this.evaluate(expr);
             console.log('inside interpret after evaluation'.bgRed, value)
@@ -21,11 +23,13 @@ class Interpreter {
     }
 
     getLiteralExpr(expr) {
+        console.log('inside getliteral in interpreter '.blue, expr.value)
         return expr.value; // ex: { type: "literalExpr", value: 1 } --> returns 1
     }
 
     getGroupingExpr(expr) {
-        return this.evaluate(expr.expression)
+        console.log('in grouping interpreter'.blue, expr.group)
+        return this.evaluate(expr.group)
     }
 
     getUnaryExpr(expr) {
@@ -43,32 +47,44 @@ class Interpreter {
     getBinaryExpr(expr) {
         const left = this.evaluate(expr.left);
         const right = this.evaluate(expr.right);
-        console.log('inside getbinary in interpreter'.blue, expr)
+        console.log('inside getbinary in interpreter'.blue, expr, 'left value is '.blue, left, 'right value is '.blue, right)
+
         switch(expr.operator.type) {
             case "MINUS": return left - right;
             case "PLUS": 
-            if (left instanceof String && right instanceof String) {
-                console.log('concatinating strings'.yellow)
+            console.log('inside addition looking for my datatype'.blue, typeof left, 'right'.blue, typeof right)
+            if (typeof left === 'string' && typeof right === 'string') {
                 return left + right;
             }
-            else if (left instanceof Number && right instanceof Number) {
-                console.log('adding numbers'.yellow)
+            else if (typeof left === 'number' && typeof right === 'number') {
                 return left + right;
             }; break;
-            case "SLASH": return left / right;
+            case "SLASH": {
+                console.log('result from divison is'.blue, left / right)
+                return left / right
+            };
             case "STAR": return left * right;
+            default: {
+
+            }
         }
 
         return null;
     }
 
     evaluate(expr) {
-        return expression.accept(expr)
+        //return expression.accept(expr)
+        switch(expr.type) {
+            case "binaryExpr": return this.getBinaryExpr(expr); 
+            case "literalExpr": return this.getLiteralExpr(expr);
+            case "unaryExpr": return this.getUnaryExpr(expr); 
+            case "groupingExpr": return this.getGroupingExpr(expr); 
+        }
     }
 
     isTruthy(obj) {
         if (obj === null) return false;
-        if (obj instanceof Boolean) return obj;
+        if (obj.constructor == Boolean) return obj;
         return true;
     }
 }

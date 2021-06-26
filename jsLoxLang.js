@@ -49,7 +49,7 @@ class JsLox {
     runPrompt() {
         console.log('inside the runprompt function');
 
-        let inputStr = '';
+        //let inputStr = '';
         
         const rl = readline.createInterface({
             input: process.stdin,
@@ -59,14 +59,18 @@ class JsLox {
         rl.setPrompt("> ");
         rl.prompt()
         rl.on("line", userInput => {
-            inputStr += userInput;
-            process.stdout.write(inputStr)
-            this.run(inputStr);
+            // inputStr += userInput;   // Figure out a way to save multiple values and parse them in order? add EOF after each?
+            // process.stdout.write(inputStr)
+            // this.run(inputStr);
+            let currentInput = '';
+            currentInput += userInput;
+            process.stdout.write(currentInput);
+            this.run(currentInput)
             this.hadError = false;
+            rl.prompt();
         })
         
         rl.on("close", () => {
-            console.log('\n that string is', inputStr)
             console.log('exiting process')
             process.exit(0)
         })
@@ -84,10 +88,10 @@ class JsLox {
         const interpreter = new Interpreter();
         interpreter.interpret(expr);
 
-        console.log('print in run',tokens)
-        for (let i = 0; i< tokens.length; i += 1) {
-            console.log('for loop in run', tokens[i])
-        }
+        // console.log('print in run',tokens)
+        // for (let i = 0; i< tokens.length; i += 1) {
+        //     console.log('for loop in run', tokens[i])
+        // }
     }
 
     error(line, message) {

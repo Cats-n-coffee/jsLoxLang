@@ -47,7 +47,7 @@ class Parser {
     // Checks for comparison tokens
     comparison() {
         var expr = this.term();
-        console.log('inside comparison'.bgBlue, expr)
+        console.log('inside comparison'.bgMagenta, expr)
         while(this.match([tokenType.GREATER, tokenType.GREATER_EQUAL, tokenType.LESS, tokenType.LESS_EQUAL])) {
             const operator = this.previous();
             const right = this.term();

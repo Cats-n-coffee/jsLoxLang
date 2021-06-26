@@ -7,18 +7,17 @@ function by matching the type available on the incoming object.
 const color = require('colors');
 
 const expression = {
-    accept: function(expr){
-        console.log('accept function received'.red, expr)
-        switch(expr.type) {
-            case "binaryExpr": this.binaryExpr(expr); break;
-            case "literalExpr": this.literalExpr(expr); break;
-            case "unaryExpr": this.unaryExpr(expr); break;
-            case "groupingExpr": this.groupingExpr(expr); break;
-        }
-    },
+    // accept: function(expr){
+    //     console.log('accept function received'.red, expr)
+    //     switch(expr.type) {
+    //         case "binaryExpr": this.binaryExpr(expr); break;
+    //         case "literalExpr": this.literalExpr(expr); break;
+    //         case "unaryExpr": this.unaryExpr(expr); break;
+    //         case "groupingExpr": this.groupingExpr(expr); break;
+    //     }
+    // },
 
     binaryExpr: function(left, operator, right) {
-        console.log('left is', left?.left)
 
         const binaryObj = {
             type: "binaryExpr",
