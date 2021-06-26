@@ -1,22 +1,30 @@
 /*
 This file to create all the nodes from the AST
-We need different functions for each type of node/expression
+We need different functions for each type of node/expression.
+The accept function will "direct" each incoming expression to the appropriate
+function by matching the type available on the incoming object.
 */
 const color = require('colors');
 
 const expression = {
-    accept: function(){
-        console.log('accept function')
+    accept: function(expr){
+        console.log('accept function received'.red, expr)
+        switch(expr.type) {
+            case "binaryExpr": this.binaryExpr(expr); break;
+            case "literalExpr": this.literalExpr(expr); break;
+            case "unaryExpr": this.unaryExpr(expr); break;
+            case "groupingExpr": this.groupingExpr(expr); break;
+        }
     },
 
     binaryExpr: function(left, operator, right) {
-        console.log('left is', left, 'operator is', operator, 'right is', right)
+        console.log('left is', left?.left)
 
         const binaryObj = {
             type: "binaryExpr",
-            left: left,
-            operator: operator,
-            right: right
+            left: left?.left || left,
+            operator: left?.operator || operator,
+            right: left?.right || right
         }
 
         console.log('in binaryExpr', binaryObj)
@@ -24,75 +32,38 @@ const expression = {
     },
 
     unaryExpr: function(operator, right) {
-        console.log('in unary expression'.red, operator + right)
-        return operator + right;
+        console.log('in unary expression operator'.red, operator, 'right '.red, right)
+        
+        const unaryObj = {
+            type: "unaryExpr",
+            operator: operator?.operator || operator,
+            right: right
+        }
+        console.log('in unary expression'.red, unaryObj)
+        return unaryObj;
     },
 
     literalExpr: function(value) {
+        console.log('in literal expression'.red, value)
 
         const literalObj = {
             type: "literalExpr",
-            value: value
+            value: value?.value || value
         }
 
         return literalObj;
     },
 
     groupingExpr: function(group) {
-        console.log('in grouping expression'.red, group);
-        return group
+        console.log('in grouping expression'.red, group)
+
+        const groupingObj = {
+            type: "groupingExpr",
+            group: group
+        }
+        console.log('in grouping expression'.red, groupingObj);
+        return groupingObj;
     }
 }
 
 module.exports = { expression }
-
-// function expression(nodeType, data) {
-//     switch(nodeType) {
-//         case "binary": binaryExpr(data); break;
-//         case "literal": literalExpr(data); break;
-//         case "unary": unaryExpr(data); break;
-//         case "grouping": groupingExpr(data); break;
-//     }
-// }
-
-// function binaryExpr(data) {
-//     console.log('im binary');
-
-//     let left = literalExpr(data.left);
-//     let operator = data.operator;
-//     let right = literalExpr(data.right);
-//     console.log(left, operator, right);
-
-//     const binaryObj = {
-//         type: "binaryExpr",
-//         left: {
-//             value: left
-//         },
-//         operator: operator,
-//         right: {
-//             value: right
-//         }
-//     }
-
-//     console.log(binaryObj)
-//     return left.toString() + operator + right.toString();
-// }
-
-// function literalExpr(data) {
-//     console.log('im literal')
-//     return data;
-// }
-
-// function unaryExpr(data) {
-//     console.log('im unary')
-// }
-
-// function groupingExpr(data) {
-//     console.log('im grouping');
-//     let result = binaryExpr(data);
-
-//     let groupedExpr = `(${result})`;
-//     console.log('grouped expr', groupedExpr)
-// }
-
-// expression('grouping', { left: 123, operator: '+', right: 23 })

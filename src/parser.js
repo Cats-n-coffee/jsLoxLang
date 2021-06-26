@@ -113,9 +113,6 @@ class Parser {
         for (let i = 0; i < types.length; i += 1) {
             if (this.check(types[i])) {
                 this.advance();
-                console.log('inside foreach match argument'.bgGreen, types[i])
-                console.log('inside match loop current token'.bgGreen, this.peek().type)
-                console.log('inside match loop current token'.bgGreen, this.previous().type)
                 return true;
             }
         }
