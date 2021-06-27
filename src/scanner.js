@@ -71,7 +71,7 @@ class Scanner {
                 }
                 else {
                     console.log('in default switch, there is an error', this.line);
-                    this.loxInstance.error(this.line, "Unexpected character.");
+                    return this.loxInstance.error(this.line, "Unexpected character.");
                 } 
                 // Have the following error statmemnt inside an else? check with main class
                 //this.loxInstance.error(this.line, "Unexpected character.");

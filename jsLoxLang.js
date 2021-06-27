@@ -96,13 +96,14 @@ class JsLox {
 
     error(line, message) {
         console.log('in the error method in jslox')
-        this.report(line, "", message)
+        return this.report(line, "", message)
     }
 
     report(line, where, message) {
         line = parseInt(line)
         console.error(`Line: ${line} Error: ${where}: ${message}`);
         this.hadError = true;
+        return `Line: ${line} Error: ${where}: ${message}`;
     }
 }
 

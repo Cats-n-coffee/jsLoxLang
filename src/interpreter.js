@@ -3,6 +3,7 @@ This file holds the interpreter class.
 */
 const util = require('util');
 const { expression } = require('./ast');
+const { RuntimeError } = require('./runtimeError');
 const color = require('colors');
 
 class Interpreter {
@@ -13,13 +14,24 @@ class Interpreter {
         console.log('/////////////////////////////////////////////////'.bgBlue)
         console.log('please, interpreter interpret'.bgRed, util.inspect(expr, false, null, true));
         console.log('/////////////////////////////////////////////////'.bgBlue)
+        if (expr === undefined) {
+            console.log('error at runtime inside interpreter from if statmt'.bgRed)
+        };
         try {
-            const value = this.evaluate(expr);
-            console.log('inside interpret after evaluation'.bgRed, value)
-            //process.stdout.write(value)
+            if (expr !== undefined) {
+                const value = this.evaluate(expr);
+                console.log('inside interpret after evaluation'.bgRed, value)
+                //process.stdout.write(value)
+            }
+            else {
+                const errorObj = new RuntimeError(expr, "Unable to read input.");
+                throw errorObj;
+            }
         }
         catch (err) {
             console.log('error at runtime inside interpreter'.bgRed, err)
+            console.log(new RuntimeError(expr, "Unable to read input."))
+            //return new RuntimeError(expr, "Unable to read input.");
         }
     }
 
@@ -51,32 +63,53 @@ class Interpreter {
         console.log('inside getbinary in interpreter'.blue, expr, 'left value is '.blue, left, 'right value is '.blue, right)
 
         switch(expr.operator.type) {
-            case "GREATER": return left > right;
-            case "GREATER_EQUAL": return left >= right;
-            case "LESS": return left < right;
-            case "LESS_EQUAL": return left <= right;
+            case "GREATER": {
+                this.checkNumberOperands(left, expr.operator, right);
+                return left > right;
+            };
+            case "GREATER_EQUAL": {
+                this.checkNumberOperands(left, expr.operator, right);
+                return left >= right;
+            };
+            case "LESS": {
+                this.checkNumberOperands(left, expr.operator, right);
+                return left < right;
+            };
+            case "LESS_EQUAL": {
+                this.checkNumberOperands(left, expr.operator, right);
+                return left <= right;
+            };
             case "BANG_EQUAL": return !this.isEqual(left, right);
             case "EQUAL_EQUAL": return this.isEqual(left, right);
-            case "MINUS": return left - right;
-            case "PLUS": 
-            console.log('inside addition looking for my datatype'.blue, typeof left, 'right'.blue, typeof right)
-            if (typeof left === 'string' && typeof right === 'string') {
-                return left + right;
-            }
-            else if (typeof left === 'number' && typeof right === 'number') {
-                return left + right;
-            }; break;
+            case "MINUS": {
+                this.checkNumberOperands(left, expr.operator, right);
+                return left - right
+            };
+            case "PLUS": { 
+                console.log('inside addition looking for my datatype'.blue, typeof left, 'right'.blue, typeof right)
+                if (typeof left === 'string' && typeof right === 'string') {
+                    return left + right;
+                }
+                else if (typeof left === 'number' && typeof right === 'number') {
+                    return left + right;
+                }
+                else {
+                    return new RuntimeError(expr.operator, "Operands must be two strings or two numbers")
+                }; 
+            };
             case "SLASH": {
+                this.checkNumberOperands(left, expr.operator, right);
                 console.log('result from divison is'.blue, left / right)
                 return left / right
             };
-            case "STAR": return left * right;
+            case "STAR": {
+                this.checkNumberOperands(left, expr.operator, right);
+                return left * right
+            };
             default: {
-
+                return new RuntimeError(expr.operator, "Unable to perform the operation with this operator.")
             }
         }
-
-        return null;
     }
 
     evaluate(expr) {
@@ -100,6 +133,16 @@ class Interpreter {
         if (item1 === null) return false;
         
         return item1 == item2;
+    }
+
+    checkNumberUnaryOperand(operator, operand) {
+        if (typeof operand === 'number') return;
+        return new RuntimeError(operator, "Operand must be a number.");
+    }
+
+    checkNumberOperands(left, operator, right) {
+        if (typeof left === 'number' && typeof right === 'number') return;
+        return new RuntimeError(operator, "Operands must be numbers.")
     }
 }
 
