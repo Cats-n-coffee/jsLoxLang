@@ -8,10 +8,12 @@ const environment = {
 };
 
 function defineEnvironment(variable, value) {
+    console.log('inside defineenvironemtn'.red, variable, 'value'.red, value)
     return environment.values[variable] = value;
 }
 
 function readEnvironment(variable) {
+    console.log('inside readenvironemtn'.red, variable)
     if (environment.values[variable.lexeme]) {
         return environment.values[variable.lexeme]
     }

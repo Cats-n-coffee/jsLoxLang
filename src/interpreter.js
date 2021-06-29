@@ -9,7 +9,7 @@ const {
     environment,
     defineEnvironment,
     readEnvironment
-} = require('./environment');
+} = require('./env');
 const color = require('colors');
 
 class Interpreter {
@@ -62,7 +62,7 @@ class Interpreter {
         if (stmt.initializer != null) {
             value = this.evaluate(stmt.initializer);
         }
-        
+
         defineEnvironment(stmt.name.lexeme, value);
         return null;
     }
@@ -91,6 +91,10 @@ class Interpreter {
         }
 
         return null;
+    }
+
+    getVariableExpr(expr) {
+        return readEnvironment(expr.name)
     }
 
     // Calls evaluate() on the left and right sides of the expression, then performs the appropriate operation inside the swicth
@@ -160,6 +164,8 @@ class Interpreter {
             case "groupingExpr": return this.getGroupingExpr(expr); 
             case "expressionStmt": return this.getExpression(expr);
             case "printStmt": return this.getPrint(expr);
+            case "varDecl": return this.getVarStmt(expr);
+            case "variableExpr": return this.getVariableExpr(expr);
         }
     }
 
