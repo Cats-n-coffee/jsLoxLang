@@ -7,26 +7,17 @@ function by matching the type available on the incoming object.
 const color = require('colors');
 
 const expression = {
-    // accept: function(expr){
-    //     console.log('accept function received'.red, expr)
-    //     switch(expr.type) {
-    //         case "binaryExpr": this.binaryExpr(expr); break;
-    //         case "literalExpr": this.literalExpr(expr); break;
-    //         case "unaryExpr": this.unaryExpr(expr); break;
-    //         case "groupingExpr": this.groupingExpr(expr); break;
-    //     }
-    // },
 
     binaryExpr: function(left, operator, right) {
 
         const binaryObj = {
             type: "binaryExpr",
-            left: left?.left || left,
-            operator: left?.operator || operator,
-            right: left?.right || right
+            left: left?.type === "binaryExpr" ? left : left?.left || left,
+            operator: left?.type === "binaryExpr" ? operator : left?.operator || operator,
+            right: left?.type === "binaryExpr" ? right : left?.right || right
         }
 
-        console.log('in binaryExpr', binaryObj)
+        console.log('in binaryExpr'.red, binaryObj)
         return binaryObj;
     },
 
@@ -65,4 +56,21 @@ const expression = {
     }
 }
 
-module.exports = { expression }
+const statement = {
+
+    expressionStmt: function(expr) {
+        const expressionObj = {}
+
+        console.log('in expression statement'.red, expressionObj)
+        return expressionObj;
+    },
+
+    printStmt: function(expr) {
+        const printObj = {}
+
+        console.log('in print statement'.red, printObj)
+        return printObj;
+    }
+}
+
+module.exports = { expression, statement }

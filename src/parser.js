@@ -24,7 +24,6 @@ class Parser {
     }
 
     expression() {
-        console.log('inside expression method');
         return this.equality();
     }
 
@@ -59,13 +58,14 @@ class Parser {
 
     term() {
         var expr = this.factor();
-
+        
         while(this.match([tokenType.MINUS, tokenType.PLUS])) {
             const operator = this.previous();
             const right = this.factor();
         
             expr = expression.binaryExpr(expr, operator, right);
         }
+        console.log('finished in the term function'.black.bgYellow, expr)
         return expr;
     }
 

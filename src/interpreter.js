@@ -112,8 +112,8 @@ class Interpreter {
         }
     }
 
+    // Directs to the appropriate method to perform the operation
     evaluate(expr) {
-        //return expression.accept(expr)
         switch(expr.type) {
             case "binaryExpr": return this.getBinaryExpr(expr); 
             case "literalExpr": return this.getLiteralExpr(expr);
