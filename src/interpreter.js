@@ -1,5 +1,6 @@
 /*
 This file holds the interpreter class. 
+It evaluates statements and expressions that were built into the AST form.
 */
 const util = require('util');
 const { expression } = require('./ast');
@@ -35,16 +36,19 @@ class Interpreter {
         }
     }
 
+    // Returns the value
     getLiteralExpr(expr) {
         console.log('inside getliteral in interpreter '.blue, expr.value)
         return expr.value; // ex: { type: "literalExpr", value: 1 } --> returns 1
     }
 
+    // "steps" inside the parentheses and calls evaluate() to "unpack" the inside expression
     getGroupingExpr(expr) {
         console.log('in grouping interpreter'.blue, expr.group)
         return this.evaluate(expr.group)
     }
 
+    // Calls evaluate() on the right side of the expression to be further evaluated, then performs the operation inside the switch
     getUnaryExpr(expr) {
         let right = this.evaluate(expr.right);
         console.log('inside interpreter unary right value'.blue, right, 'unary operator'.blue, expr.operator.type)
@@ -57,6 +61,7 @@ class Interpreter {
         return null;
     }
 
+    // Calls evaluate() on the left and right sides of the expression, then performs the appropriate operation inside the swicth
     getBinaryExpr(expr) {
         const left = this.evaluate(expr.left);
         const right = this.evaluate(expr.right);
@@ -112,7 +117,7 @@ class Interpreter {
         }
     }
 
-    // Directs to the appropriate method to perform the operation
+    // Directs to the appropriate method to perform the operation. It matches the 'type' given when building the AST
     evaluate(expr) {
         switch(expr.type) {
             case "binaryExpr": return this.getBinaryExpr(expr); 
@@ -135,11 +140,13 @@ class Interpreter {
         return item1 == item2;
     }
 
+    // Returns an error if operand is not a number
     checkNumberUnaryOperand(operator, operand) {
         if (typeof operand === 'number') return;
         return new RuntimeError(operator, "Operand must be a number.");
     }
 
+    // Returns an error if both operands are not numbers
     checkNumberOperands(left, operator, right) {
         if (typeof left === 'number' && typeof right === 'number') return;
         return new RuntimeError(operator, "Operands must be numbers.")

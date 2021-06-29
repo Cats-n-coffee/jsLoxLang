@@ -69,3 +69,6 @@ The `evaluate()` method "directs traffic" by checking the type of expression it 
 
 ## Statements and state
 
+Statements will wrap expressions, so in the interpreter the main `interpret()` method will create a statement. 
+This statement can be a print statement (stdout), or an expression statement (at the start of chapter 8).
+Statements are part of the syntax tree and get their own nodes (?).
