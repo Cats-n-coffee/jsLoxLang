@@ -8,30 +8,34 @@ const { RuntimeError } = require('./runtimeError');
 const color = require('colors');
 
 class Interpreter {
-    constructor() {
+    constructor(loxInstance) {
+        this.loxInstance = loxInstance
     }
 
-    interpret(expr) {
+    interpret(statements) {
         console.log('/////////////////////////////////////////////////'.bgBlue)
-        console.log('please, interpreter interpret'.bgRed, util.inspect(expr, false, null, true));
+        console.log('please, interpreter interpret'.bgRed, util.inspect(statements, false, null, true));
         console.log('/////////////////////////////////////////////////'.bgBlue)
-        if (expr === undefined) {
-            console.log('error at runtime inside interpreter from if statmt'.bgRed)
+        if (statements === undefined) {
+            console.log('error at runtime inside interpreter, statement is undefined'.bgGreen)
         };
         try {
-            if (expr !== undefined) {
-                const value = this.evaluate(expr[0]);
-                console.log('inside interpret after evaluation'.bgRed, value)
+            if (statements !== undefined) {
+                //const value = this.evaluate(expr[0]);
+                //console.log('inside interpret after evaluation'.bgRed, value)
                 //process.stdout.write(value)
+                for (let i = 0; i < statements.length; i += 1) {
+                    this.evaluate(statements[i])
+                }
             }
             else {
-                const errorObj = new RuntimeError(expr, "Unable to read input.");
+                const errorObj = new RuntimeError(statements, "Unable to read input.");
                 throw errorObj;
             }
         }
         catch (err) {
             console.log('error at runtime inside interpreter'.bgRed, err)
-            console.log(new RuntimeError(expr, "Unable to read input."))
+            console.log(new RuntimeError(statements, "Unable to read input.", "2nd console.log"))
             //return new RuntimeError(expr, "Unable to read input.");
         }
     }
@@ -44,7 +48,7 @@ class Interpreter {
     getPrint(expr) {
         const value = this.evaluate(expr.expression);
         console.log('printing your expression!'.bgYellow, value);
-        process.stdout.write(JSON.stringify(value))
+        process.stdout.write(this.stringify(value))
         return null;
     }
 
@@ -153,6 +157,19 @@ class Interpreter {
         if (item1 === null) return false;
         
         return item1 == item2;
+    }
+
+    stringify(obj) {
+        if (obj === null) return "nil";
+        if (typeof obj === 'number') {
+            let text = JSON.stringify(obj);
+            if (text.endsWith('.0')) {
+                text = text.substring(0, text.length - 2);
+            }
+            return text;
+        }
+
+        return JSON.stringify(obj);
     }
 
     // Returns an error if operand is not a number

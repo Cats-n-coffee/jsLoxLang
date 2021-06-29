@@ -7,9 +7,10 @@ const { expression, statement } = require('./ast');
 const color = require('colors');
 
 class Parser {
-    constructor(tokens){
+    constructor(tokens, loxInstance){
         this.tokens = tokens;
         this.current = 0;
+        this.loxInstance = loxInstance
     }
 
     // This function is called inside JsLox class
@@ -23,15 +24,24 @@ class Parser {
         // }
         const statements = [];
         if (!this.isAtEnd()) { // --------> supposed to be a while loop, but infinite loop, figure out why
-            statements.push(this.statement())
+            statements.push(this.declaration())
         }
 
         return statements;
     }
 
-    // Parses expressions (inside statements)
-    expression() {
-        return this.equality();
+    declaration() {
+        try {
+            if (this.match([tokenType.VAR])) return this.varDeclaration();
+
+            return this.statement()
+        }
+        catch (err) {
+            // Parse Error class??
+            console.log('error in parse declaration', err)
+            this.synchronize();
+            return null;
+        }
     }
 
     // Looks for the PRINT token, then decides to print or move forward with "unpacking" expressions
@@ -42,6 +52,11 @@ class Parser {
         return this.expressionStatement();
     }
 
+    // Parses expressions (inside statements)
+    expression() {
+        return this.equality();
+    }
+// --------------------------------- STATEMENTS ------------------------------------
     printStatement() {
         const value = this.expression();
 console.log('inside printStatement'.magenta, value)
@@ -137,8 +152,10 @@ console.log('inside printStatement'.magenta, value)
             this.consume(tokenType.RIGHT_PAREN, "Expect ')' after expression.")
             return expression.groupingExpr(expr);
         }
+        return this.error(this.peek(), 'Expect expression.')
     }
 
+// ------------------------------- Matches and checks tokens ---------------------------------
     // Matches the token types, checks if they correspond to the current token type
     match([...types]) {
         for (let i = 0; i < types.length; i += 1) {
@@ -150,24 +167,49 @@ console.log('inside printStatement'.magenta, value)
         return false;
     }
 
-    // Checks if the token type is of type ')'
-    consume(type, message) {
-        if (this.check(type)) return this.advance();
-        else {
-            console.log('error in consume'.bgMagenta, message)
-        }
-    }
-
-    // Returns the most recently consumed token (current -1)
-    previous() {
-        return this.tokens[this.current - 1];
-    }
-
     // "looks" at the current token and checks if the type matches
     check(type) {
         if (this.isAtEnd()) return false; // If the current token is the last one (EOF) return false
         console.log('inside check method'.cyan, this.peek().type)
         return this.peek().type === type;
+    }
+
+    // Checks if the token type is of type ')'
+    consume(type, message) {
+        if (this.check(type)) return this.advance();
+        console.log('error in consume'.bgMagenta, message)
+        throw this.error(this.peek(), message);
+    }
+
+// --------------------------------- Error handling ----------------------------------
+    error(token, message) {
+        return this.loxInstance.parseError(token, message)
+    }
+
+    synchronize() {
+        this.advance();
+
+        while (!this.isAtEnd()) {
+            if (this.previous().type === tokenType.SEMICOLON) return;
+
+            switch (this.peek().type) {
+                case tokenType.CLASS: return;
+                case tokenType.FUN: return;
+                case tokenType.VAR: return;
+                case tokenType.FOR: return;
+                case tokenType.IF: return;
+                case tokenType.WHILE: return;
+                case tokenType.PRINT: return;
+                case tokenType.RETURN: return;
+            }
+
+            this.advance()
+        }
+    }
+// -------------------------------- Moves the cursor ---------------------------------
+    // Returns the most recently consumed token (current -1)
+    previous() {
+        return this.tokens[this.current - 1];
     }
 
     // Consumes the current token

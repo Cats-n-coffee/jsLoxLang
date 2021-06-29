@@ -6,6 +6,7 @@ function by matching the type available on the incoming object.
 */
 const color = require('colors');
 
+// ------------------------------- Expressions ------------------------------
 const expression = {
 
     binaryExpr: function(left, operator, right) {
@@ -53,9 +54,19 @@ const expression = {
         }
         console.log('in grouping expression'.red, groupingObj);
         return groupingObj;
+    },
+
+    variableExpr: function(name) {
+        const variableObj = {
+
+        }
+
+        console.log('in variable expression'.red, variableObj)
+        return variableObj;
     }
 }
 
+// -------------------------------- Statements ----------------------------------
 const statement = {
 
     expressionStmt: function(expr) {
@@ -78,6 +89,14 @@ const statement = {
 
         console.log('in print statement'.red, printObj)
         return printObj;
+    },
+
+    varDecl: function(name, initializer = null) {
+        const varObj = {
+
+        }
+        console.log('in varDecl'.red, varObj)
+        return varObj;
     }
 }
 

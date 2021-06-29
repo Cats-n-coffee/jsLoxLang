@@ -81,17 +81,12 @@ class JsLox {
         const scanner = new Scanner(source, this);
         const tokens = scanner.scanTokens();
 
-        const parser = new Parser(tokens);
-        const expr = parser.parse();
-        console.log('expression parsed in JsLox', expr);
+        const parser = new Parser(tokens, this);
+        const statements = parser.parse();
+        console.log('expression parsed in JsLox', statements);
 
-        const interpreter = new Interpreter();
-        interpreter.interpret(expr);
-
-        // console.log('print in run',tokens)
-        // for (let i = 0; i< tokens.length; i += 1) {
-        //     console.log('for loop in run', tokens[i])
-        // }
+        const interpreter = new Interpreter(this);
+        interpreter.interpret(statements);
     }
 
     error(line, message) {
@@ -104,6 +99,15 @@ class JsLox {
         console.error(`Line: ${line} Error: ${where}: ${message}`);
         this.hadError = true;
         return `Line: ${line} Error: ${where}: ${message}`;
+    }
+
+    parseError(token, message) {
+        if (token.type === 'EOF') {
+            this.report(token.line, ' at end', message)
+        }
+        else {
+            this.report(token.line, " at '", token.lexeme, "' ", message)
+        }
     }
 }
 

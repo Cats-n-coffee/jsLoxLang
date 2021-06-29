@@ -69,6 +69,12 @@ The `evaluate()` method "directs traffic" by checking the type of expression it 
 
 ## Statements and state
 
+### Statements
 Statements will wrap expressions, so in the interpreter the main `interpret()` method will create a statement. 
 This statement can be a print statement (stdout), or an expression statement (at the start of chapter 8).
-Statements are part of the syntax tree and get their own nodes (?).
+Statements are part of the syntax tree and get their own nodes. Because they have their own type in the AST, we can add them to the `evaluate()` method inside the switch. They will be checked and directed to the correct method.
+
+### Global variables
+Variable declarations go on the same level as statements.
+So from the top level (program), declarations can be: variable declaration or statements (statements can be expression or print statements).
+They have their own node in the AST.

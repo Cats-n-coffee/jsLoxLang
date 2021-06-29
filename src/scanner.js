@@ -179,7 +179,7 @@ class Scanner {
         if (type === null || type === undefined) {
             type = tokenType.IDENTIFIER;
         }
-        console.log('type is ', type)
+        console.log('type is ', type, 'text is', text)
         this.addTokenToArr(type, text); // Do we need only the type? if we do: this.addToken will be sufficient
         // Do we need the literal value for identifiers?
     }
