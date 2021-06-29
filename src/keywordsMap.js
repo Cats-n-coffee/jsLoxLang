@@ -10,7 +10,7 @@ const keywords = {
     "if": tokenType.IF,
     "nil": tokenType.NIL,
     "or": tokenType.OR,
-    "print": tokenType.PRINT,
+    print: tokenType.PRINT,
     "return": tokenType.RETURN,
     "super": tokenType.SUPER,
     "this": tokenType.THIS,

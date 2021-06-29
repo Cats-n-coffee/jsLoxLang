@@ -20,7 +20,7 @@ class Interpreter {
         };
         try {
             if (expr !== undefined) {
-                const value = this.evaluate(expr);
+                const value = this.evaluate(expr[0]);
                 console.log('inside interpret after evaluation'.bgRed, value)
                 //process.stdout.write(value)
             }
@@ -34,6 +34,18 @@ class Interpreter {
             console.log(new RuntimeError(expr, "Unable to read input."))
             //return new RuntimeError(expr, "Unable to read input.");
         }
+    }
+
+    getExpression(expr) {
+        console.log('inside get epxres'.bgYellow, expr.expression)
+        return this.evaluate(expr.expression);
+    }
+
+    getPrint(expr) {
+        const value = this.evaluate(expr.expression);
+        console.log('printing your expression!'.bgYellow, value);
+        process.stdout.write(JSON.stringify(value))
+        return null;
     }
 
     // Returns the value
@@ -119,11 +131,14 @@ class Interpreter {
 
     // Directs to the appropriate method to perform the operation. It matches the 'type' given when building the AST
     evaluate(expr) {
+        console.log('inside evaluate', expr)
         switch(expr.type) {
             case "binaryExpr": return this.getBinaryExpr(expr); 
             case "literalExpr": return this.getLiteralExpr(expr);
             case "unaryExpr": return this.getUnaryExpr(expr); 
             case "groupingExpr": return this.getGroupingExpr(expr); 
+            case "expressionStmt": return this.getExpression(expr);
+            case "printStmt": return this.getPrint(expr);
         }
     }
 

@@ -59,14 +59,22 @@ const expression = {
 const statement = {
 
     expressionStmt: function(expr) {
-        const expressionObj = {}
+        console.log('in expression statement this is expr'.red, expr)
+        const expressionObj = {
+            type: "expressionStmt",
+            expression: expr
+        }
 
         console.log('in expression statement'.red, expressionObj)
         return expressionObj;
     },
 
     printStmt: function(expr) {
-        const printObj = {}
+        console.log('in print statement this is value'.red, expr)
+        const printObj = {
+            type: "printStmt",
+            expression: expr
+        }
 
         console.log('in print statement'.red, printObj)
         return printObj;

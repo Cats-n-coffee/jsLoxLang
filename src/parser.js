@@ -3,7 +3,7 @@ This is the parser class. It takes the tokens as input (from the scanner),
 and outputs a syntax tree for the grammar rule being parsed.
 */
 const { tokenType } = require('./tokenType');
-const { expression } = require('./ast');
+const { expression, statement } = require('./ast');
 const color = require('colors');
 
 class Parser {
@@ -14,18 +14,49 @@ class Parser {
 
     // This function is called inside JsLox class
     parse() {
-        try {
-            return this.expression()
+        // try {
+        //     return this.expression()
+        // }
+        // catch (e) {
+        //     // change for error function once made
+        //     console.log('error in parser', e);
+        // }
+        const statements = [];
+        if (!this.isAtEnd()) { // --------> supposed to be a while loop, but infinite loop, figure out why
+            statements.push(this.statement())
         }
-        catch (e) {
-            // change for error function once made
-            console.log('error in parser', e);
-        }
+
+        return statements;
     }
 
+    // Parses expressions (inside statements)
     expression() {
         return this.equality();
     }
+
+    // Looks for the PRINT token, then decides to print or move forward with "unpacking" expressions
+    statement() {
+        console.log('inside statement'.red, this.peek())
+        if (this.match([tokenType.PRINT])) return this.printStatement();
+
+        return this.expressionStatement();
+    }
+
+    printStatement() {
+        const value = this.expression();
+console.log('inside printStatement'.magenta, value)
+        this.consume(tokenType.SEMICOLON, "Expect ';' after value.")
+        return statement.printStmt(value);
+    }
+
+    expressionStatement() {
+        const expr = this.expression();
+        console.log('inside expressionStatement'.magenta, expr)
+        this.consume(tokenType.SEMICOLON, "Expect ';' after expression.")
+        return statement.expressionStmt(expr)
+    }
+
+// ----------------------------------- EXPRESSION WORK ------------------------------------
 
     // Check if there is '!=' or '=='
     // The result of each method called (comparison, previous) is stored in a variable to be used
@@ -123,7 +154,7 @@ class Parser {
     consume(type, message) {
         if (this.check(type)) return this.advance();
         else {
-            console.log('error in consume'.bgRed, message)
+            console.log('error in consume'.bgMagenta, message)
         }
     }
 
