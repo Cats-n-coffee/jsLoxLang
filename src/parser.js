@@ -56,7 +56,7 @@ class Parser {
     expression() {
         return this.equality();
     }
-// --------------------------------- STATEMENTS ------------------------------------
+// ------------------------------------ STATEMENTS ---------------------------------------
     printStatement() {
         const value = this.expression();
 console.log('inside printStatement'.magenta, value)
@@ -69,6 +69,18 @@ console.log('inside printStatement'.magenta, value)
         console.log('inside expressionStatement'.magenta, expr)
         this.consume(tokenType.SEMICOLON, "Expect ';' after expression.")
         return statement.expressionStmt(expr)
+    }
+
+    varDeclaration() {
+        const name = this.consume(tokenType.IDENTIFIER, "Expect variable name.");
+        console.log('inside vardecalration'.yellow, name)
+        let initializer = null;
+        if (this.match([tokenType.EQUAL])) {
+            initializer = this.expression();
+        }
+
+        this.consume(tokenType.SEMICOLON, "Expect ';' after variable declaration.");
+        return statement.varDecl(name, initializer);
     }
 
 // ----------------------------------- EXPRESSION WORK ------------------------------------
@@ -145,6 +157,11 @@ console.log('inside printStatement'.magenta, value)
         if (this.match([tokenType.NUMBER, tokenType.STRING])) {
             console.log('inside parser in primary precedence'.blue, expression.literalExpr(this.previous().literal))
             return expression.literalExpr(this.previous().literal)
+        }
+
+        if (this.match([tokenType.IDENTIFIER])) {
+            console.log('inside parser at indentifier'.red, expression.variableExpr(this.previous()))
+            return expression.variableExpr(this.previous());
         }
 
         if (this.match([tokenType.LEFT_PAREN])) {

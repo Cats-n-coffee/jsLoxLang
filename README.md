@@ -67,7 +67,7 @@ The main function in this class is the `interpret()` method, and is called from 
 The `interpret()` method checks if the expression is undefined, throws an error if it is, or calls the `evaluate()` method.
 The `evaluate()` method "directs traffic" by checking the type of expression it encounters. In its switch statement, it calls the appropriate method that will perform the operation (*binary*: addition, subtraction, comparison ..., *literal*: returns the value, *unary*: inverts true/false, negates a value, or *grouping*: unpacks)
 
-## Statements and state
+## Statements and State
 
 ### Statements
 Statements will wrap expressions, so in the interpreter the main `interpret()` method will create a statement. 
@@ -78,3 +78,7 @@ Statements are part of the syntax tree and get their own nodes. Because they hav
 Variable declarations go on the same level as statements.
 So from the top level (program), declarations can be: variable declaration or statements (statements can be expression or print statements).
 They have their own node in the AST.
+Inside the parser, we look for the `var` keyword, , a variable name, and then for the  `=`  token (and handle errors anywhere in between). The AST node for the **IDENTIFIER** will be created/returned inside the `primary()` method. 
+
+### Environment
+We need to bind the variable and its value. The easiest way is to create key-value pairs. 

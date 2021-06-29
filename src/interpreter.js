@@ -3,8 +3,13 @@ This file holds the interpreter class.
 It evaluates statements and expressions that were built into the AST form.
 */
 const util = require('util');
-const { expression } = require('./ast');
+const { expression, statement } = require('./ast');
 const { RuntimeError } = require('./runtimeError');
+const {
+    environment,
+    defineEnvironment,
+    readEnvironment
+} = require('./environment');
 const color = require('colors');
 
 class Interpreter {
@@ -39,7 +44,7 @@ class Interpreter {
             //return new RuntimeError(expr, "Unable to read input.");
         }
     }
-
+// ----------------------------- STATEMENTS EVALUATION -------------------------------
     getExpression(expr) {
         console.log('inside get epxres'.bgYellow, expr.expression)
         return this.evaluate(expr.expression);
@@ -52,6 +57,17 @@ class Interpreter {
         return null;
     }
 
+    getVarStmt(stmt) {
+        let value = null;
+        if (stmt.initializer != null) {
+            value = this.evaluate(stmt.initializer);
+        }
+        
+        defineEnvironment(stmt.name.lexeme, value);
+        return null;
+    }
+
+// ------------------------------ EXPRESSION EVALUATION ----------------------------------
     // Returns the value
     getLiteralExpr(expr) {
         console.log('inside getliteral in interpreter '.blue, expr.value)
@@ -133,6 +149,7 @@ class Interpreter {
         }
     }
 
+// ----------------------------------- EVALUATE --------------------------------------
     // Directs to the appropriate method to perform the operation. It matches the 'type' given when building the AST
     evaluate(expr) {
         console.log('inside evaluate', expr)
@@ -146,6 +163,7 @@ class Interpreter {
         }
     }
 
+// ---------------------------------- HELPERS ----------------------------------------
     isTruthy(obj) {
         if (obj === null) return false;
         if (obj.constructor == Boolean) return obj;
@@ -172,6 +190,7 @@ class Interpreter {
         return JSON.stringify(obj);
     }
 
+// ----------------------------------- ERROR HANDLING ------------------------------------
     // Returns an error if operand is not a number
     checkNumberUnaryOperand(operator, operand) {
         if (typeof operand === 'number') return;

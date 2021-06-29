@@ -58,7 +58,8 @@ const expression = {
 
     variableExpr: function(name) {
         const variableObj = {
-
+            type: "variableExpr",
+            name: name
         }
 
         console.log('in variable expression'.red, variableObj)
@@ -93,7 +94,9 @@ const statement = {
 
     varDecl: function(name, initializer = null) {
         const varObj = {
-
+            type: "varDecl",
+            name: name,
+            initializer: initializer
         }
         console.log('in varDecl'.red, varObj)
         return varObj;
