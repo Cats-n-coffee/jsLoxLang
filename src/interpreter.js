@@ -8,7 +8,8 @@ const { RuntimeError } = require('./runtimeError');
 const {
     environment,
     defineEnvironment,
-    readEnvironment
+    readEnvironment,
+    assign
 } = require('./env');
 const color = require('colors');
 
@@ -44,7 +45,7 @@ class Interpreter {
             //return new RuntimeError(expr, "Unable to read input.");
         }
     }
-// ----------------------------- STATEMENTS EVALUATION -------------------------------
+// ----------------------------- STATEMENTS / ASSIGNMENT EVALUATION -------------------------------
     getExpression(expr) {
         console.log('inside get epxres'.bgYellow, expr.expression)
         return this.evaluate(expr.expression);
@@ -65,6 +66,12 @@ class Interpreter {
 
         defineEnvironment(stmt.name.lexeme, value);
         return null;
+    }
+
+    getAssignExpr(expr) {
+        const value = this.evaluate(expr.value);
+        assign(expr.name, value);
+        return value;
     }
 
 // ------------------------------ EXPRESSION EVALUATION ----------------------------------
@@ -156,7 +163,6 @@ class Interpreter {
 // ----------------------------------- EVALUATE --------------------------------------
     // Directs to the appropriate method to perform the operation. It matches the 'type' given when building the AST
     evaluate(expr) {
-        console.log('inside evaluate', expr)
         switch(expr.type) {
             case "binaryExpr": return this.getBinaryExpr(expr); 
             case "literalExpr": return this.getLiteralExpr(expr);
@@ -166,6 +172,7 @@ class Interpreter {
             case "printStmt": return this.getPrint(expr);
             case "varDecl": return this.getVarStmt(expr);
             case "variableExpr": return this.getVariableExpr(expr);
+            case "assignExpr": return this.getAssignExpr(expr);
         }
     }
 

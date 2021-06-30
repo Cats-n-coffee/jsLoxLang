@@ -55,7 +55,7 @@ class Parser {
     // Parses expressions (inside statements)
     expression() {
         //return this.equality();
-        this.assignment();
+        return this.assignment();
     }
 // ------------------------------------ STATEMENTS / ASSIGNMENT ---------------------------------------
     printStatement() {
@@ -74,7 +74,7 @@ console.log('inside printStatement'.magenta, value)
 
     varDeclaration() {
         const name = this.consume(tokenType.IDENTIFIER, "Expect variable name.");
-        console.log('inside vardecalration'.yellow, name)
+
         let initializer = null;
         if (this.match([tokenType.EQUAL])) {
             initializer = this.expression();
@@ -92,10 +92,14 @@ console.log('inside printStatement'.magenta, value)
             const value = this.assignment();
 
             if (expr.type === 'variableExpr') {
+                let name = expr.name;
+                console.log('inside parser at assignment'.yellow, expr, 'name is'.yellow, name)
                 // we need to change the type of expr to a token type, stored in 'let name'
-                let name = expression.assignExpr(name, value)
+                return expression.assignExpr(name, value)
             }
+            this.error(equals, "Invalid assignment target.");
         }
+        return expr;
     }
 
 // ----------------------------------- EXPRESSION WORK ------------------------------------

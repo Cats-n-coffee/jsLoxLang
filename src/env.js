@@ -19,4 +19,14 @@ function readEnvironment(variable) {
     throw new RuntimeError(variable, "Undefined variable '" + variable.lexeme + "' .")
 }
 
-module.exports = { environment, defineEnvironment, readEnvironment }
+function assign(name, value) {
+    console.log('inside the env assign function, name is'.bgCyan, name, 'value is'.bgCyan, value)
+    if (environment.hasOwnProperty(name.lexeme)) {
+        environment[name.lexeme] = value;
+        console.log('our enviuronemtn'.red, environment)
+        return;
+    }
+    throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "' .");
+}
+
+module.exports = { environment, defineEnvironment, readEnvironment, assign }

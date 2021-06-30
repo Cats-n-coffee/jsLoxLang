@@ -82,3 +82,10 @@ Inside the parser, we look for the `var` keyword, , a variable name, and then fo
 
 ### Environment
 We need to bind the variable and its value. The easiest way is to create key-value pairs. 
+In Js, we can create simple objects, and create functions that will do the work we need on these objects: define, read, assign.
+
+### Assignment
+In the parser, we will call in `expression()` the assignment method, that will run the expression to check left and right side. It looks for an equal sign, checks if the type of expression is `variableExpr`, and perform the change for `assignExpr` type.
+
+### Scope
+We first need to allow nesting of environments, to have access to outer scope from inside, but not the other way around. 
