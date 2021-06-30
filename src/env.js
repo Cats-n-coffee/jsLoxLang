@@ -3,19 +3,17 @@ Holds the object that contains variables and their values.
 */
 const { RuntimeError } = require('./runtimeError');
 
-const environment = {
-    values: {}
-};
+const environment = {};
 
 function defineEnvironment(variable, value) {
     console.log('inside defineenvironemtn'.red, variable, 'value'.red, value)
-    return environment.values[variable] = value;
+    return environment[variable] = value;
 }
 
 function readEnvironment(variable) {
     console.log('inside readenvironemtn'.red, variable)
-    if (environment.values[variable.lexeme]) {
-        return environment.values[variable.lexeme]
+    if (environment[variable.lexeme]) {
+        return environment[variable.lexeme]
     }
 
     throw new RuntimeError(variable, "Undefined variable '" + variable.lexeme + "' .")

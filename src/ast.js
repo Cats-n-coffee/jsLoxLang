@@ -64,6 +64,17 @@ const expression = {
 
         console.log('in variable expression'.red, variableObj)
         return variableObj;
+    },
+
+    assignExpr: function(name, value) {
+        const assignObj = {
+            type: "assignExpr",
+            name: name,
+            value: value
+        }
+
+        console.log('in assign expression'.red, assignObj)
+        return assignObj;
     }
 }
 

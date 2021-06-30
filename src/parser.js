@@ -54,9 +54,10 @@ class Parser {
 
     // Parses expressions (inside statements)
     expression() {
-        return this.equality();
+        //return this.equality();
+        this.assignment();
     }
-// ------------------------------------ STATEMENTS ---------------------------------------
+// ------------------------------------ STATEMENTS / ASSIGNMENT ---------------------------------------
     printStatement() {
         const value = this.expression();
 console.log('inside printStatement'.magenta, value)
@@ -81,6 +82,20 @@ console.log('inside printStatement'.magenta, value)
 
         this.consume(tokenType.SEMICOLON, "Expect ';' after variable declaration.");
         return statement.varDecl(name, initializer);
+    }
+
+    assignment() {
+        let expr = this.equality();
+
+        if (this.match([tokenType.EQUAL])) {
+            const equals = this.previous();
+            const value = this.assignment();
+
+            if (expr.type === 'variableExpr') {
+                // we need to change the type of expr to a token type, stored in 'let name'
+                let name = expression.assignExpr(name, value)
+            }
+        }
     }
 
 // ----------------------------------- EXPRESSION WORK ------------------------------------
