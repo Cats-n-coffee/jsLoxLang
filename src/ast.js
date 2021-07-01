@@ -4,6 +4,7 @@ We need different functions for each type of node/expression.
 The accept function will "direct" each incoming expression to the appropriate
 function by matching the type available on the incoming object.
 */
+const util = require('util');
 const color = require('colors');
 
 // ------------------------------- Expressions ------------------------------
@@ -111,6 +112,16 @@ const statement = {
         }
         console.log('in varDecl'.red, varObj)
         return varObj;
+    },
+
+    blockStmt: function (statements) {
+        const blockObj = {
+            type: "blockStmt",
+            statements: statements
+        }
+
+        console.log('inside block stmt'.red, util.inspect(blockObj, false, null, true))
+        return blockObj;
     }
 }
 

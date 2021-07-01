@@ -23,13 +23,14 @@ class Parser {
         //     console.log('error in parser', e);
         // }
         const statements = [];
-        if (!this.isAtEnd()) { // --------> supposed to be a while loop, but infinite loop, figure out why
+        while (!this.isAtEnd()) { // --------> supposed to be a while loop, but infinite loop, figure out why
             statements.push(this.declaration())
         }
 
         return statements;
     }
 
+    // Checks for the 'var' keyword and creates a new variable declaration if true
     declaration() {
         try {
             if (this.match([tokenType.VAR])) return this.varDeclaration();
@@ -48,6 +49,7 @@ class Parser {
     statement() {
         console.log('inside statement'.red, this.peek())
         if (this.match([tokenType.PRINT])) return this.printStatement();
+        if (this.match([tokenType.LEFT_BRACE])) return statement.blockStmt(this.block());
 
         return this.expressionStatement();
     }
@@ -102,6 +104,18 @@ console.log('inside printStatement'.magenta, value)
         return expr;
     }
 
+    block() {
+        const statements = [];
+
+        while (!this.check(tokenType.RIGHT_BRACE) && !this.isAtEnd()) {
+            console.log('inside the while in block'.bgGreen)
+            statements.push(this.declaration());
+        }
+        console.log('hitting the block method'.bgGreen, statements)
+        this.consume(tokenType.RIGHT_BRACE, "Expect '}' after block.");
+        return statements;
+    }
+
 // ----------------------------------- EXPRESSION WORK ------------------------------------
 
     // Check if there is '!=' or '=='
@@ -142,7 +156,6 @@ console.log('inside printStatement'.magenta, value)
         
             expr = expression.binaryExpr(expr, operator, right);
         }
-        console.log('finished in the term function'.black.bgYellow, expr)
         return expr;
     }
 

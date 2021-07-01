@@ -30,3 +30,5 @@ function assign(name, value) {
 }
 
 module.exports = { environment, defineEnvironment, readEnvironment, assign }
+
+//   var a = 1; {var b = 3;}; print a;

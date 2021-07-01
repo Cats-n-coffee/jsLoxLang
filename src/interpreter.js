@@ -54,6 +54,7 @@ class Interpreter {
     getPrint(expr) {
         const value = this.evaluate(expr.expression);
         console.log('printing your expression!'.bgYellow, value);
+        console.log('inside interpreter environment'.yellow, environment)
         process.stdout.write(this.stringify(value))
         return null;
     }
@@ -72,6 +73,17 @@ class Interpreter {
         const value = this.evaluate(expr.value);
         assign(expr.name, value);
         return value;
+    }
+
+    getBlockStmt(stmt) {
+        console.log('inside interpreter looking at statement', stmt)
+        let key = stmt.statements[0].name.lexeme;
+        let value = stmt.statements[0].initializer.value;
+        let obj = {};
+        obj[key] = value;
+        const localEnv = defineEnvironment('0000', obj)
+        this.executeBlock(stmt.statements, localEnv);
+        return null
     }
 
 // ------------------------------ EXPRESSION EVALUATION ----------------------------------
@@ -160,7 +172,7 @@ class Interpreter {
         }
     }
 
-// ----------------------------------- EVALUATE --------------------------------------
+// ----------------------------------- EVALUATE / EXECUTE --------------------------------------
     // Directs to the appropriate method to perform the operation. It matches the 'type' given when building the AST
     evaluate(expr) {
         switch(expr.type) {
@@ -173,6 +185,22 @@ class Interpreter {
             case "varDecl": return this.getVarStmt(expr);
             case "variableExpr": return this.getVariableExpr(expr);
             case "assignExpr": return this.getAssignExpr(expr);
+            case "blockStmt": return this.getBlockStmt(expr);
+        }
+    }
+
+    executeBlock(statements, env) {
+        let previous = this.env;
+console.log('inside executeBlock in interpreter'.magenta, this.env, 'env is', env, 'statms', statements)
+        try {
+            this.env = env;
+            for (let i = 0; i < statements.length; i += 1){
+                console.log('each stmt', statements[i])
+                this.evaluate(statements[i])
+            }
+        }
+        finally {
+            this.env = previous;
         }
     }
 
