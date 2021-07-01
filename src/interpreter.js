@@ -191,13 +191,15 @@ class Interpreter {
 
     executeBlock(statements, env) {
         let previous = this.env;
-console.log('inside executeBlock in interpreter'.magenta, this.env, 'env is', env, 'statms', statements)
+// new environemtn for the block scope needs to be created here?
         try {
             this.env = env;
+            console.log('inside executeBlock in interpreter'.magenta, this.env, 'env is', env, 'previous is'.magenta, previous, 'statms', statements)
             for (let i = 0; i < statements.length; i += 1){
                 console.log('each stmt', statements[i])
                 this.evaluate(statements[i])
             }
+            console.log('environemtn is currently '.yellow, environment)
         }
         finally {
             this.env = previous;

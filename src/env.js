@@ -3,26 +3,29 @@ Holds the object that contains variables and their values.
 */
 const { RuntimeError } = require('./runtimeError');
 
-const environment = {};
+const environment = {
+    globalEnv: {},
 
-function defineEnvironment(variable, value) {
+};
+
+function defineEnvironment(env = 'globalEnv', variable, value) {
     console.log('inside defineenvironemtn'.red, variable, 'value'.red, value)
-    return environment[variable] = value;
+    return environment[env][variable] = value;
 }
 
-function readEnvironment(variable) {
+function readEnvironment(env = 'globalEnv', variable) {
     console.log('inside readenvironemtn'.red, variable)
-    if (environment[variable.lexeme]) {
-        return environment[variable.lexeme]
+    if (environment[env][variable.lexeme]) {
+        return environment[env][variable.lexeme]
     }
 
     throw new RuntimeError(variable, "Undefined variable '" + variable.lexeme + "' .")
 }
 
-function assign(name, value) {
+function assign(env = 'globalEnv', name, value) {
     console.log('inside the env assign function, name is'.bgCyan, name, 'value is'.bgCyan, value)
-    if (environment.hasOwnProperty(name.lexeme)) {
-        environment[name.lexeme] = value;
+    if (environment[env].hasOwnProperty(name.lexeme)) {
+        environment[env][name.lexeme] = value;
         console.log('our enviuronemtn'.red, environment)
         return;
     }
@@ -31,4 +34,3 @@ function assign(name, value) {
 
 module.exports = { environment, defineEnvironment, readEnvironment, assign }
 
-//   var a = 1; {var b = 3;}; print a;
