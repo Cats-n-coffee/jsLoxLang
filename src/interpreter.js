@@ -5,18 +5,17 @@ It evaluates statements and expressions that were built into the AST form.
 const util = require('util');
 const { expression, statement } = require('./ast');
 const { RuntimeError } = require('./runtimeError');
-const {
-    environment,
-    defineEnvironment,
-    readEnvironment,
-    assign
-} = require('./env');
+const { Environment, ScopeEnvironment } = require('./env');
 const { createEnvId } = require('./helpers');
 const color = require('colors');
 
+const globalEnv = new Environment();
+
 class Interpreter {
     constructor(loxInstance) {
-        this.loxInstance = loxInstance
+        this.loxInstance = loxInstance,
+        this.env = globalEnv;
+        this.scopeEnv = null;
     }
 
     interpret(statements) {
@@ -28,9 +27,6 @@ class Interpreter {
         };
         try {
             if (statements !== undefined) {
-                //const value = this.evaluate(expr[0]);
-                //console.log('inside interpret after evaluation'.bgRed, value)
-                //process.stdout.write(value)
                 for (let i = 0; i < statements.length; i += 1) {
                     this.evaluate(statements[i])
                 }
@@ -55,7 +51,7 @@ class Interpreter {
     getPrint(expr) {
         const value = this.evaluate(expr.expression);
         console.log('printing your expression!'.bgYellow, value);
-        console.log('inside interpreter environment'.yellow, environment)
+        console.log('inside interpreter environment'.yellow, this.env)
         process.stdout.write(this.stringify(value))
         return null;
     }
@@ -65,25 +61,23 @@ class Interpreter {
         if (stmt.initializer != null) {
             value = this.evaluate(stmt.initializer);
         }
-
-        defineEnvironment(env, stmt.name.lexeme, value);
+        
+        this.env.defineEnvironment(stmt.name.lexeme, value)
+        console.log('inside the varstmt checking the env'.yellow, this.env)
         return null;
     }
 
     getAssignExpr(expr) {
         const value = this.evaluate(expr.value);
-        assign(expr.name, value);
+        this.env.assign(expr.name, value);
         return value;
-    }
+    } 
 
     getBlockStmt(stmt) {
         console.log('inside interpreter looking at statement', stmt)
-        let key = stmt.statements[0].name.lexeme;
-        let value = stmt.statements[0].initializer.value;
-
         const envId = createEnvId();
-        const localEnv = defineEnvironment(envId, key, value)
-        this.executeBlock(stmt.statements, localEnv);
+        const newBlock = new ScopeEnvironment(envId)
+        this.executeBlock(stmt.statements, newBlock);
         return null
     }
 
@@ -114,7 +108,19 @@ class Interpreter {
     }
 
     getVariableExpr(expr) {
-        return readEnvironment(expr.name)
+        console.log('at get variable lie 119', this.env)
+        let name = '';
+        if (this.env.hasOwnProperty('parent')) {
+            console.log('scope is'.yellow, this.env, 'parent is'.yellow, this.env.showParent(globalEnv), 'potential property'.yellow, expr.name.lexeme)
+            const firstTry = this.env.readEnvironment(expr.name.lexeme);
+            console.log('first try '.bgCyan, firstTry)
+            return this.env.readEnvironment(expr.name.lexeme);
+            // if (firstTry === undefined || firstTry === null) {
+            //     this.env = this.env.parent;
+            // }
+        }
+        console.log('line 120, current env'.bgCyan, this.env)
+        return this.env.readEnvironment(expr.name.lexeme)
     }
 
     // Calls evaluate() on the left and right sides of the expression, then performs the appropriate operation inside the swicth
@@ -190,20 +196,27 @@ class Interpreter {
         }
     }
 
-    executeBlock(statements, env) {
-        let previous = this.env;
-// new environemtn for the block scope needs to be created here?
+    executeBlock(statements, scopeEnv) {
+        let previous = this.scopeEnv;
+// new environemtn for the block scope needs to be created here
+// need extra properties for env and parent env on the children?
+        
         try {
-            this.env = env;
-            console.log('inside executeBlock in interpreter'.magenta, this.env, 'env is', env, 'previous is'.magenta, previous, 'statms', statements)
+            scopeEnv.showParent(this.env)
+            this.env = scopeEnv;
+            this.scopeEnv = scopeEnv;
+            console.log('entering execute block, this.env'.bgCyan, this.env, 'this.scopeenv', this.scopeEnv)
+            console.log('inside executeBlock in interpreter'.magenta, 'env is', this.scopeEnv, 'statms', statements)
             for (let i = 0; i < statements.length; i += 1){
                 console.log('each stmt', statements[i])
+                // modify each statment first to add some env properties?
                 this.evaluate(statements[i])
             }
-            console.log('environemtn is currently '.yellow, environment)
+            console.log('environemtn is currently '.yellow, this.env, 'global is ', globalEnv)
         }
         finally {
-            this.env = previous;
+            this.env = globalEnv;
+            console.log('inside finally in executeBlock newnev is', previous)
         }
     }
 
@@ -232,6 +245,12 @@ class Interpreter {
         }
 
         return JSON.stringify(obj);
+    }
+
+    // This method find the environment for variable lookup
+    findCorrectEnv(currentEnv) {
+        // should only go up the chain towards the parent
+
     }
 
 // ----------------------------------- ERROR HANDLING ------------------------------------
