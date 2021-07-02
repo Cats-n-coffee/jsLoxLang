@@ -5,18 +5,21 @@ const { RuntimeError } = require('./runtimeError');
 
 const environment = {
     globalEnv: {},
-
 };
 
 function defineEnvironment(env = 'globalEnv', variable, value) {
     console.log('inside defineenvironemtn'.red, variable, 'value'.red, value)
-    return environment[env][variable] = value;
+    if (env === 'globalEnv') return environment[env][variable] = value;
+    else {
+        let newEnv = environment[env] = {};
+        return newEnv[variable] = value; 
+    }
 }
 
 function readEnvironment(env = 'globalEnv', variable) {
     console.log('inside readenvironemtn'.red, variable)
-    if (environment[env][variable.lexeme]) {
-        return environment[env][variable.lexeme]
+    if (environment[env][variable]) {
+        return environment[env][variable]
     }
 
     throw new RuntimeError(variable, "Undefined variable '" + variable.lexeme + "' .")

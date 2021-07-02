@@ -11,6 +11,7 @@ const {
     readEnvironment,
     assign
 } = require('./env');
+const { createEnvId } = require('./helpers');
 const color = require('colors');
 
 class Interpreter {
@@ -65,7 +66,7 @@ class Interpreter {
             value = this.evaluate(stmt.initializer);
         }
 
-        defineEnvironment(stmt.name.lexeme, value);
+        defineEnvironment(env, stmt.name.lexeme, value);
         return null;
     }
 
@@ -79,9 +80,9 @@ class Interpreter {
         console.log('inside interpreter looking at statement', stmt)
         let key = stmt.statements[0].name.lexeme;
         let value = stmt.statements[0].initializer.value;
-        let obj = {};
-        obj[key] = value;
-        const localEnv = defineEnvironment('0000', obj)
+
+        const envId = createEnvId();
+        const localEnv = defineEnvironment(envId, key, value)
         this.executeBlock(stmt.statements, localEnv);
         return null
     }
