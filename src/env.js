@@ -4,22 +4,28 @@ Holds the object that contains variables and their values.
 const { RuntimeError } = require('./runtimeError');
 
 class Environment {
+   
     constructor() {
-        this.env = { env: 'global' };
+        //this.env = null;
     }
 
     defineEnvironment(variable, value) {
-        console.log('inside defineenvironemtn'.red, variable, 'value'.red, value)
-        let adding = this.env[variable] = value;
-        console.log('before return', this.env, 'value', adding)
-        return this.env[variable] = value;
+        console.log('inside defineenvironemtn'.red, variable, 'value'.red, value, 'current is', this.env)
+        //this.env = {};
+        //let adding = this.env[variable] = value;
+        //console.log('before return', this.env, 'value', adding)
+        return this[variable] = value;
     }
 
     readEnvironment(variable) {
         console.log('inside readenvironemtn'.red, variable)
-        console.log('current env'.yellow, this.env)
-        if (this.env[variable]) {
-            return this.env[variable]
+        console.log('current env'.yellow, this.env, 'this'.yellow, this)
+        if (this[variable]) {
+            return this[variable]
+        }
+        if (this[variable] === undefined && this.parent) {
+            console.log('cant find it')
+            return this.parent;
         }
     
         throw new RuntimeError(variable, "Undefined variable '" + variable.lexeme + "' .")

@@ -63,7 +63,7 @@ class Interpreter {
         }
         
         this.env.defineEnvironment(stmt.name.lexeme, value)
-        console.log('inside the varstmt checking the env'.yellow, this.env)
+        console.log('inside the varstmt checking the env'.yellow, this.env, 'fron outisde', globalEnv)
         return null;
     }
 
@@ -113,11 +113,11 @@ class Interpreter {
         if (this.env.hasOwnProperty('parent')) {
             console.log('scope is'.yellow, this.env, 'parent is'.yellow, this.env.showParent(globalEnv), 'potential property'.yellow, expr.name.lexeme)
             const firstTry = this.env.readEnvironment(expr.name.lexeme);
+
             console.log('first try '.bgCyan, firstTry)
-            return this.env.readEnvironment(expr.name.lexeme);
-            // if (firstTry === undefined || firstTry === null) {
-            //     this.env = this.env.parent;
-            // }
+            if (firstTry) {
+                return firstTry[expr.name.lexeme];
+            }
         }
         console.log('line 120, current env'.bgCyan, this.env)
         return this.env.readEnvironment(expr.name.lexeme)
@@ -197,7 +197,7 @@ class Interpreter {
     }
 
     executeBlock(statements, scopeEnv) {
-        let previous = this.scopeEnv;
+        let previous = this.env;
 // new environemtn for the block scope needs to be created here
 // need extra properties for env and parent env on the children?
         
@@ -268,3 +268,5 @@ class Interpreter {
 }
 
 module.exports = { Interpreter }
+
+// var a =1; {var b =5; print a;}
