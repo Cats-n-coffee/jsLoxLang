@@ -5,12 +5,12 @@ It evaluates statements and expressions that were built into the AST form.
 const util = require('util');
 const { expression, statement } = require('./ast');
 const { RuntimeError } = require('./runtimeError');
-const { Environment, ScopeEnvironment } = require('./env');
+const { Environment } = require('./env');
 const { createEnvId } = require('./helpers');
 const color = require('colors');
 const { tokenType } = require('./tokenType');
 
-const globalEnv = new Environment();
+const globalEnv = new Environment(null);
 
 class Interpreter {
     constructor(loxInstance) {
@@ -54,7 +54,7 @@ class Interpreter {
         const value = this.evaluate(expr.expression);
         console.log('printing your expression!'.bgYellow, value);
         console.log('inside interpreter environment'.yellow, this.env)
-        process.stdout.write(this.stringify(value))
+        //process.stdout.write(this.stringify(value))
         return null;
     }
 
@@ -77,8 +77,7 @@ class Interpreter {
 
     getBlockStmt(stmt) {
         console.log('inside interpreter looking at statement', stmt)
-        const envId = createEnvId();
-        const newBlock = new ScopeEnvironment(envId)
+        const newBlock = new Environment(this.env)
         this.executeBlock(stmt.statements, newBlock);
         return null
     }
@@ -140,18 +139,8 @@ class Interpreter {
         return null;
     }
 
-    getVariableExpr(expr) {
-        console.log('at get variable lie 119', this.env)
-        let name = '';
-        if (this.env.hasOwnProperty('parent')) {
-            console.log('scope is'.yellow, this.env, 'parent is'.yellow, this.env.showParent(globalEnv), 'potential property'.yellow, expr.name.lexeme)
-            const firstTry = this.env.readEnvironment(expr.name.lexeme);
-
-            console.log('first try '.bgCyan, firstTry)
-            if (firstTry) {
-                return firstTry[expr.name.lexeme];
-            }
-        }
+    getVariableExpr(expr){
+        console.log('inside variable expression'.bgCyan, expr)
         console.log('line 120, current env'.bgCyan, this.env)
         return this.env.readEnvironment(expr.name.lexeme)
     }
@@ -235,24 +224,21 @@ class Interpreter {
 
     executeBlock(statements, scopeEnv) {
         let previous = this.env;
-// new environemtn for the block scope needs to be created here
-// need extra properties for env and parent env on the children?
         
         try {
-            scopeEnv.showParent(this.env)
+           
             this.env = scopeEnv;
-            this.scopeEnv = scopeEnv;
-            console.log('entering execute block, this.env'.bgCyan, this.env, 'this.scopeenv', this.scopeEnv)
-            console.log('inside executeBlock in interpreter'.magenta, 'env is', this.scopeEnv, 'statms', statements)
+            // console.log('entering execute block, this.env'.bgCyan, this.env, 'this.scopeenv', this.scopeEnv)
+            // console.log('inside executeBlock in interpreter'.magenta, 'env is', this.scopeEnv, 'statms', statements)
             for (let i = 0; i < statements.length; i += 1){
                 console.log('each stmt', statements[i])
-                // modify each statment first to add some env properties?
+
                 this.evaluate(statements[i])
             }
             console.log('environemtn is currently '.yellow, this.env, 'global is ', globalEnv)
         }
         finally {
-            this.env = globalEnv;
+            this.env = previous;
             console.log('inside finally in executeBlock newnev is', previous)
         }
     }
@@ -307,4 +293,7 @@ class Interpreter {
 module.exports = { Interpreter }
 
 // var a =1; {var b =5; print a;}
-// var i = 0; while(i < 10) {print i; i = i + 1;}
+// var a = 1; while(a < 5) {a = a + 1; print "hi";}
+// var a =1; {var b =5; {print a;}}
+// var a = 1; {var b = 5; {var c = 8;{print a;}}}
+// var a = 0; var temp; for (var i = 1; a < 10; i = temp + i){print a; temp = a; a = b;}

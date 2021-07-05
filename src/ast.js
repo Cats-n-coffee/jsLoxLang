@@ -126,10 +126,11 @@ const statement = {
         return varObj;
     },
 
-    blockStmt: function (statements) {
+    blockStmt: function ([...statements]) {
+        console.log('inside block stmt this is the array'.red, ...statements)
         const blockObj = {
             type: "blockStmt",
-            statements: statements
+            statements: [...statements]
         }
 
         console.log('inside block stmt'.red, util.inspect(blockObj, false, null, true))

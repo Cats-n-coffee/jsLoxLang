@@ -192,6 +192,16 @@ console.log('inside printStatement'.magenta, value)
         this.consume(tokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
 
         let body = this.statement();
+        if (increment !== null) {
+            body = statement.blockStmt([body, statement.expressionStmt(increment)])
+        }
+        if (condition === null) {
+            condition = expression.literalExpr(true);
+        }
+        body = statement.whileStmt(condition, body);
+        if (initializer !== null) {
+            body = statement.blockStmt(initializer, body);
+        }
 
         return body;
     }
@@ -344,8 +354,6 @@ console.log('inside printStatement'.magenta, value)
     // Consumes the current token
     advance() {
         if (!this.isAtEnd()) { // if isAtEnd is true, we invoke this.previous
-            console.log('in advance printing current'.magenta, this.current)
-            console.log('in advance printing current type'.magenta, this.peek().type)
             this.current++;
         }
         return this.previous(); // The last token has EOF type, we do not need to consume it, so we go back one token
