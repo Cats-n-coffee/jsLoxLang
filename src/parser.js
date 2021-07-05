@@ -48,7 +48,9 @@ class Parser {
     // Looks for the PRINT token, then decides to print or move forward with "unpacking" expressions
     statement() {
         console.log('inside statement'.red, this.peek())
+        if (this.match([tokenType.IF])) return this.ifStatement();
         if (this.match([tokenType.PRINT])) return this.printStatement();
+        if (this.match([tokenType.WHILE])) return this.whileStatement();
         if (this.match([tokenType.LEFT_BRACE])) return statement.blockStmt(this.block());
 
         return this.expressionStatement();
@@ -86,8 +88,18 @@ console.log('inside printStatement'.magenta, value)
         return statement.varDecl(name, initializer);
     }
 
+    whileStatement() {
+        this.consume(tokenType.LEFT_PAREN, "Expect '(' after 'while'.");
+        const condition = this.expression();
+
+        this.consume(tokenType.RIGHT_PAREN, "Expect ')' after condition.");
+        const body = this.statement();
+
+        return statement.whileStmt(condition, body);
+    }
+
     assignment() {
-        let expr = this.equality();
+        let expr = this.or();
 
         if (this.match([tokenType.EQUAL])) {
             const equals = this.previous();
@@ -104,6 +116,29 @@ console.log('inside printStatement'.magenta, value)
         return expr;
     }
 
+    or() {
+        let expr = this.and();
+
+        while (this.match([tokenType.OR])) {
+            const operator = this.previous();
+            const right = this.and();
+            expr = expression.logicalExpr(expr, operator, right);
+        }
+        return expr;
+    }
+
+    and() {
+        let expr = this.equality();
+
+        while (this.match([tokenType.AND])) {
+            const operator = this.previous();
+            const right = this.equality();
+
+            expr = expression.LogicalExpr(expr, operator, right)
+        }
+        return expr;
+    }
+
     block() {
         const statements = [];
 
@@ -114,6 +149,19 @@ console.log('inside printStatement'.magenta, value)
         console.log('hitting the block method'.bgGreen, statements)
         this.consume(tokenType.RIGHT_BRACE, "Expect '}' after block.");
         return statements;
+    }
+
+    ifStatement() {
+        this.consume(tokenType.LEFT_PAREN, "Expect '(' after 'if'.");
+        let condition = this.expression();
+        this.consume(tokenType.RIGHT_PAREN, "Expect ')' if condition.");
+
+        let thenBranch = this.statement();
+        let elseBranch = null;
+        if (this.match([tokenType.ELSE])) {
+            this.statement();
+        }
+        return statement.ifStmt(condition, thenBranch, elseBranch)
     }
 
 // ----------------------------------- EXPRESSION WORK ------------------------------------

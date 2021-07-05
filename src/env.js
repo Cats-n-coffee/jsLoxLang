@@ -20,7 +20,7 @@ class Environment {
     readEnvironment(variable) {
         console.log('inside readenvironemtn'.red, variable)
         console.log('current env'.yellow, this.env, 'this'.yellow, this)
-        if (this[variable]) {
+        if (this[variable] !== undefined) {
             return this[variable]
         }
         if (this[variable] === undefined && this.parent) {
@@ -33,16 +33,16 @@ class Environment {
 
     assign(name, value) {
         console.log('inside the env assign function, name is'.bgCyan, name, 'value is'.bgCyan, value)
-        if (this.env.hasOwnProperty(name.lexeme)) {
-            this.env[name.lexeme] = value;
-            console.log('our enviuronemtn'.red, this.env)
+        if (this.hasOwnProperty(name.lexeme)) {
+            this[name.lexeme] = value;
+            console.log('our enviuronemtn'.red, this)
             return;
         }
         throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "' .");
     }
 
     returnSelf() {
-        return this.env;
+        return this;
     }
 }
 

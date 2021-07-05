@@ -8,6 +8,7 @@ const { RuntimeError } = require('./runtimeError');
 const { Environment, ScopeEnvironment } = require('./env');
 const { createEnvId } = require('./helpers');
 const color = require('colors');
+const { tokenType } = require('./tokenType');
 
 const globalEnv = new Environment();
 
@@ -49,6 +50,7 @@ class Interpreter {
     }
 
     getPrint(expr) {
+        console.log('inside print'.bgYellow, expr)
         const value = this.evaluate(expr.expression);
         console.log('printing your expression!'.bgYellow, value);
         console.log('inside interpreter environment'.yellow, this.env)
@@ -79,6 +81,37 @@ class Interpreter {
         const newBlock = new ScopeEnvironment(envId)
         this.executeBlock(stmt.statements, newBlock);
         return null
+    }
+
+    getIfStmt(stmt) {
+        console.log('inside interpreter at if stmt', stmt)
+        if (this.isTruthy(this.evaluate(stmt.condition))) {
+            this.evaluate(stmt.thenBranch);
+        } 
+        else if (stmt.elseBranch !== null) {
+            this.evaluate(stmt.elseBranch);
+        }
+        return null;
+    }
+
+    getLogicalExpr(expr) {
+        let left = this.evaluate(expr.left);
+
+        if (expr.operator.type === tokenType.OR) {
+            if (this.isTruthy(left)) return left;
+        }
+        else {
+            if (!this.isTruthy(left)) return left;
+        }
+
+        return this.evaluate(expr.right);
+    }
+
+    getWhileStmt(stmt) {
+        while (this.isTruthy(this.evaluate(stmt.condition))) {
+            this.evaluate(stmt.body);
+        }
+        return null;
     }
 
 // ------------------------------ EXPRESSION EVALUATION ----------------------------------
@@ -150,6 +183,7 @@ class Interpreter {
             case "EQUAL_EQUAL": return this.isEqual(left, right);
             case "MINUS": {
                 this.checkNumberOperands(left, expr.operator, right);
+                console.log('doing the math'.bgBlue, left-right)
                 return left - right
             };
             case "PLUS": { 
@@ -193,6 +227,9 @@ class Interpreter {
             case "variableExpr": return this.getVariableExpr(expr);
             case "assignExpr": return this.getAssignExpr(expr);
             case "blockStmt": return this.getBlockStmt(expr);
+            case "ifStmt": return this.getIfStmt(expr);
+            case "logicalExpr": return this.getLogicalExpr(expr);
+            case "whileStmt": return this.getWhileStmt(expr);
         }
     }
 

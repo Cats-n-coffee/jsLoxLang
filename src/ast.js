@@ -76,6 +76,18 @@ const expression = {
 
         console.log('in assign expression'.red, assignObj)
         return assignObj;
+    },
+
+    logicalExpr: function(left, operator, right) {
+        const logicalObj = {
+            type: "logicalExpr",
+            left: left,
+            operator: operator,
+            right: right
+        }
+
+        console.log('inside the logical expr', logicalObj)
+        return logicalObj;
     }
 }
 
@@ -122,6 +134,29 @@ const statement = {
 
         console.log('inside block stmt'.red, util.inspect(blockObj, false, null, true))
         return blockObj;
+    },
+
+    ifStmt: function(condition, thenBranch, elseBranch) {
+        const ifObj = {
+            type: "ifStmt",
+            condition: condition,
+            thenBranch: thenBranch || null,
+            elseBranch: elseBranch || null
+        }
+
+        console.log('inside if stmt'.red, util.inspect(ifObj, false, null, true))
+        return ifObj;
+    },
+
+    whileStmt: function(condition, body) {
+        const whileObj = {
+            type: "whileStmt",
+            condition: condition,
+            body: body
+        }
+
+        console.log('inside while stmt'.red, util.inspect(whileObj, false, null, true))
+        return whileObj;
     }
 }
 
