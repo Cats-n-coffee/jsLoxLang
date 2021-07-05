@@ -157,7 +157,7 @@ const statement = {
 
         console.log('inside while stmt'.red, util.inspect(whileObj, false, null, true))
         return whileObj;
-    }
+    },
 }
 
 module.exports = { expression, statement }

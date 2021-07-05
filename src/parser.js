@@ -48,6 +48,7 @@ class Parser {
     // Looks for the PRINT token, then decides to print or move forward with "unpacking" expressions
     statement() {
         console.log('inside statement'.red, this.peek())
+        if (this.match([tokenType.FOR])) return this.forStatement();
         if (this.match([tokenType.IF])) return this.ifStatement();
         if (this.match([tokenType.PRINT])) return this.printStatement();
         if (this.match([tokenType.WHILE])) return this.whileStatement();
@@ -162,6 +163,37 @@ console.log('inside printStatement'.magenta, value)
             this.statement();
         }
         return statement.ifStmt(condition, thenBranch, elseBranch)
+    }
+
+    forStatement() {
+        this.consume(tokenType.LEFT_PAREN, "Expect '(' after 'for'.");
+
+        let initializer;
+        if (this.match([tokenType.SEMICOLON])) {
+            initializer = null;
+        }
+        else if (this.match([tokenType.VAR])) {
+            initializer = this.varDeclaration();
+        }
+        else {
+            initializer = this.expressionStatement();
+        }
+
+        let condition = null;
+        if (!this.check(tokenType.SEMICOLON)) {
+            condition = this.expression();
+        }
+        this.consume(tokenType.SEMICOLON, "Expect ';' after loop condition.");
+
+        let increment = null;
+        if (!this.check(tokenType.RIGHT_PAREN)) {
+            increment = this.expression();
+        }
+        this.consume(tokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
+
+        let body = this.statement();
+
+        return body;
     }
 
 // ----------------------------------- EXPRESSION WORK ------------------------------------
