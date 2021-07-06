@@ -167,41 +167,46 @@ console.log('inside printStatement'.magenta, value)
 
     forStatement() {
         this.consume(tokenType.LEFT_PAREN, "Expect '(' after 'for'.");
-
+console.log('inside the for statement in parser'.bgCyan)
+        // Creates the initializer
         let initializer;
         if (this.match([tokenType.SEMICOLON])) {
-            initializer = null;
+            initializer = null; // If there is only a semicolon declares null
         }
         else if (this.match([tokenType.VAR])) {
-            initializer = this.varDeclaration();
+            initializer = this.varDeclaration(); // If there is VAR, creates a variable
         }
         else {
-            initializer = this.expressionStatement();
+            initializer = this.expressionStatement(); // Else, creates an expression statement
         }
 
+        // Checks the condition
         let condition = null;
         if (!this.check(tokenType.SEMICOLON)) {
-            condition = this.expression();
+            condition = this.expression(); // If there is no semicolon, creates an expression
         }
         this.consume(tokenType.SEMICOLON, "Expect ';' after loop condition.");
 
+        // Checks the increment
         let increment = null;
         if (!this.check(tokenType.RIGHT_PAREN)) {
-            increment = this.expression();
+            increment = this.expression(); // If there is no ')' creates an expression
         }
         this.consume(tokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
 
+        // Checks the body
         let body = this.statement();
-        if (increment !== null) {
+        if (increment !== null) { // If the increment is not null, the body is a block
             body = statement.blockStmt([body, statement.expressionStmt(increment)])
         }
-        if (condition === null) {
+        if (condition === null) { // If the condition is null, we create an infinite loop
             condition = expression.literalExpr(true);
         }
         body = statement.whileStmt(condition, body);
-        if (initializer !== null) {
-            body = statement.blockStmt(initializer, body);
+        if (initializer !== null) { // If the initializer has a value, the body will be a statement block
+            body = statement.blockStmt([initializer, body]);
         }
+        console.log('for loop has '.bgCyan, initializer, condition, body)
 
         return body;
     }
@@ -216,9 +221,8 @@ console.log('inside printStatement'.magenta, value)
         while(this.match([tokenType.BANG_EQUAL, tokenType.EQUAL_EQUAL])) {
             const operator = this.previous();
             const right = this.comparison();
-            console.log('inside while'.bgMagenta)
+      
             expr = expression.binaryExpr(expr, operator, right);
-            console.log('inside equality while'.bgMagenta, expr)
         }
         console.log('in parser equality'.bgMagenta, expr)
         return expr;
@@ -277,12 +281,10 @@ console.log('inside printStatement'.magenta, value)
         if (this.match([tokenType.NIL])) return expression.literalExpr(null);
 
         if (this.match([tokenType.NUMBER, tokenType.STRING])) {
-            console.log('inside parser in primary precedence'.blue, expression.literalExpr(this.previous().literal))
             return expression.literalExpr(this.previous().literal)
         }
 
         if (this.match([tokenType.IDENTIFIER])) {
-            console.log('inside parser at indentifier'.red, expression.variableExpr(this.previous()))
             return expression.variableExpr(this.previous());
         }
 

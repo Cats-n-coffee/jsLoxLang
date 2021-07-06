@@ -297,3 +297,4 @@ module.exports = { Interpreter }
 // var a = 1; {var b = 5; {var c = 8;{print a;}}}
 // var a = 0; var temp; for (var i = 1; a < 5; i = temp + i){print a; temp = a; a = i;}
 // var a = 1; a = a + 1; a = a + 1; print a;
+// var a = 1; for (var i = 0;a < 5; i + 1){ print i; print a;}

@@ -60,7 +60,7 @@ const expression = {
     variableExpr: function(name) {
         const variableObj = {
             type: "variableExpr",
-            name: name
+            name: name?.lexeme || name
         }
 
         console.log('in variable expression'.red, variableObj)
@@ -130,7 +130,7 @@ const statement = {
         console.log('inside block stmt this is the array'.red, ...statements)
         const blockObj = {
             type: "blockStmt",
-            statements: [...statements]
+            statements: statements
         }
 
         console.log('inside block stmt'.red, util.inspect(blockObj, false, null, true))
