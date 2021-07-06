@@ -202,6 +202,16 @@ class Interpreter {
         }
     }
 
+    getCallExpr(expr) {
+        const callee = this.evaluate(expr.callee);
+
+        const arguments = [];
+        for (let i = 0; i < expr.arguments.length; i += 1) {
+            let argument = expr.arguments[i];
+            arguments.push(this.evaluate(argument))
+        }
+    }
+
 // ----------------------------------- EVALUATE / EXECUTE --------------------------------------
     // Directs to the appropriate method to perform the operation. It matches the 'type' given when building the AST
     evaluate(expr) {
@@ -219,6 +229,7 @@ class Interpreter {
             case "ifStmt": return this.getIfStmt(expr);
             case "logicalExpr": return this.getLogicalExpr(expr);
             case "whileStmt": return this.getWhileStmt(expr);
+            case "callExpr": return this.getCallExpr(expr);
             default:
                 throw new RuntimeError(expr, "Cannot evaluate expression or statement.")
         }
@@ -295,6 +306,7 @@ module.exports = { Interpreter }
 // var a = 1; while(a < 5) {a = a + 1; print "hi";}
 // var a =1; {var b =5; {print a;}}
 // var a = 1; {var b = 5; {var c = 8;{print a;}}}
-// var a = 0; var temp; for (var i = 1; a < 5; i = temp + i){print a; temp = a; a = i;}
+// var a = 0; var temp = 0; for (var i = 1; a < 5; i = temp + i;){print a; temp = a; a = i;}
 // var a = 1; a = a + 1; a = a + 1; print a;
 // var a = 1; for (var i = 0;a < 5; i + 1){ print i; print a;}
+// var a = "hello"; for (var i = 1; i < 5;i = i + 1;){print "hi";}

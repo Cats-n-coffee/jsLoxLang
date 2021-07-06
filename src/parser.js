@@ -23,7 +23,7 @@ class Parser {
         //     console.log('error in parser', e);
         // }
         const statements = [];
-        while (!this.isAtEnd()) { // --------> supposed to be a while loop, but infinite loop, figure out why
+        while (!this.isAtEnd()) { 
             statements.push(this.declaration())
         }
 
@@ -45,7 +45,6 @@ class Parser {
         }
     }
 
-    // Looks for the PRINT token, then decides to print or move forward with "unpacking" expressions
     statement() {
         console.log('inside statement'.red, this.peek())
         if (this.match([tokenType.FOR])) return this.forStatement();
@@ -57,9 +56,8 @@ class Parser {
         return this.expressionStatement();
     }
 
-    // Parses expressions (inside statements)
+    // Parses expressions 
     expression() {
-        //return this.equality();
         return this.assignment();
     }
 // ------------------------------------ STATEMENTS / ASSIGNMENT ---------------------------------------
@@ -109,7 +107,6 @@ console.log('inside printStatement'.magenta, value)
             if (expr.type === 'variableExpr') {
                 let name = expr.name;
                 console.log('inside parser at assignment'.yellow, expr, 'name is'.yellow, name)
-                // we need to change the type of expr to a token type, stored in 'let name'
                 return expression.assignExpr(name, value)
             }
             this.error(equals, "Invalid assignment target.");
@@ -272,7 +269,38 @@ console.log('inside the for statement in parser'.bgCyan)
 
             return expression.unaryExpr(operator, right);
         }
-        return this.primary();
+        return this.call();
+    }
+
+    call() {
+        let expr = this.primary();
+
+        while (true) {
+            if (this.match([tokenType.LEFT_PAREN])) {
+                expr = this.finishCall(expr);
+            }
+            else {
+                break;
+            }
+        }
+        console.log('inside the call in parser', expr)
+        return expr;
+    }
+
+    finishCall(callee) {
+        const arguments = [];
+
+        if (!this.check(tokenType.RIGHT_PAREN)) {
+            do {
+                if (arguments.length >= 255) {
+                    this.error(this.peek(), "Can't have more than 255 arguments.")
+                }
+                arguments.push(this.expression())
+            } while (this.match([tokenType.COMMA]))
+        }
+        const paren = this.consume(tokenType.RIGHT_PAREN, "Expect ')' after arguments.");
+
+        return expression.callExpr(callee, paren, arguments);
     }
 
     primary() {

@@ -60,7 +60,7 @@ const expression = {
     variableExpr: function(name) {
         const variableObj = {
             type: "variableExpr",
-            name: name?.lexeme || name
+            name: name
         }
 
         console.log('in variable expression'.red, variableObj)
@@ -88,6 +88,18 @@ const expression = {
 
         console.log('inside the logical expr', logicalObj)
         return logicalObj;
+    },
+
+    callExpr: function(callee, paren, arguments) {
+        const callObj = {
+            type: "callExpr",
+            callee: callee,
+            paren: paren,
+            arguments: arguments
+        }
+
+        console.log('inside the call expression'.red, callObj)
+        return callObj;
     }
 }
 
