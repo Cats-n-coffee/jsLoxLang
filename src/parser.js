@@ -309,7 +309,6 @@ console.log('inside printStatement'.magenta, value)
     // "looks" at the current token and checks if the type matches
     check(type) {
         if (this.isAtEnd()) return false; // If the current token is the last one (EOF) return false
-        console.log('inside check method'.cyan, this.peek().type)
         return this.peek().type === type;
     }
 

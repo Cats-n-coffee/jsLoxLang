@@ -219,6 +219,8 @@ class Interpreter {
             case "ifStmt": return this.getIfStmt(expr);
             case "logicalExpr": return this.getLogicalExpr(expr);
             case "whileStmt": return this.getWhileStmt(expr);
+            default:
+                throw new RuntimeError(expr, "Cannot evaluate expression or statement.")
         }
     }
 
@@ -226,10 +228,7 @@ class Interpreter {
         let previous = this.env;
         
         try {
-           
             this.env = scopeEnv;
-            // console.log('entering execute block, this.env'.bgCyan, this.env, 'this.scopeenv', this.scopeEnv)
-            // console.log('inside executeBlock in interpreter'.magenta, 'env is', this.scopeEnv, 'statms', statements)
             for (let i = 0; i < statements.length; i += 1){
                 console.log('each stmt', statements[i])
 
@@ -292,8 +291,9 @@ class Interpreter {
 
 module.exports = { Interpreter }
 
-// var a =1; {var b =5; print a;}
+// var a =1; {a =5; print a;}
 // var a = 1; while(a < 5) {a = a + 1; print "hi";}
 // var a =1; {var b =5; {print a;}}
 // var a = 1; {var b = 5; {var c = 8;{print a;}}}
-// var a = 0; var temp; for (var i = 1; a < 10; i = temp + i){print a; temp = a; a = b;}
+// var a = 0; var temp; for (var i = 1; a < 5; i = temp + i){print a; temp = a; a = i;}
+// var a = 1; a = a + 1; a = a + 1; print a;
