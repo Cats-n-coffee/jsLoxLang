@@ -1,3 +1,3 @@
-Scanner/ Lexer
 [] command line args
-[] split the code at the appropriate places
+[] read files
+[] error from parser to interpreter and to entry file

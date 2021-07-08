@@ -141,7 +141,6 @@ class Interpreter {
 
     getVariableExpr(expr){
         console.log('inside variable expression'.bgCyan, expr)
-        console.log('line 120, current env'.bgCyan, this.env)
         return this.env.readEnvironment(expr.name.lexeme)
     }
 
@@ -205,10 +204,10 @@ class Interpreter {
     getCallExpr(expr) {
         const callee = this.evaluate(expr.callee);
 
-        const arguments = [];
+        const argumentsArr = [];
         for (let i = 0; i < expr.arguments.length; i += 1) {
             let argument = expr.arguments[i];
-            arguments.push(this.evaluate(argument))
+            argumentsArr.push(this.evaluate(argument))
         }
     }
 
@@ -241,7 +240,7 @@ class Interpreter {
         try {
             this.env = scopeEnv;
             for (let i = 0; i < statements.length; i += 1){
-                console.log('each stmt', statements[i])
+                console.log('each stmt'.bgMagenta, statements[i])
 
                 this.evaluate(statements[i])
             }
@@ -280,12 +279,6 @@ class Interpreter {
         return JSON.stringify(obj);
     }
 
-    // This method find the environment for variable lookup
-    findCorrectEnv(currentEnv) {
-        // should only go up the chain towards the parent
-
-    }
-
 // ----------------------------------- ERROR HANDLING ------------------------------------
     // Returns an error if operand is not a number
     checkNumberUnaryOperand(operator, operand) {
@@ -306,7 +299,7 @@ module.exports = { Interpreter }
 // var a = 1; while(a < 5) {a = a + 1; print "hi";}
 // var a =1; {var b =5; {print a;}}
 // var a = 1; {var b = 5; {var c = 8;{print a;}}}
-// var a = 0; var temp = 0; for (var i = 1; a < 5; i = temp + i;){print a; temp = a; a = i;}
+// var a = 0; var temp = 0; for (var i = 1; a < 5; i = temp + i){print a; temp = a; a = i;}
 // var a = 1; a = a + 1; a = a + 1; print a;
-// var a = 1; for (var i = 0;a < 5; i + 1){ print i; print a;}
-// var a = "hello"; for (var i = 1; i < 5;i = i + 1;){print "hi";}
+// var a = 1; for (var i = 1;a < 5; i = i + 1){ print i; print a;}
+// for (var i = 0; i < 5;i = i + 1)print i;

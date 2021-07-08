@@ -190,9 +190,11 @@ console.log('inside the for statement in parser'.bgCyan)
             increment = this.expression(); // If there is no ')' creates an expression
         }
         this.consume(tokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
-
+        
         // Checks the body
         let body = this.statement();
+        // "Desugaring" of all the variables declared above
+        // Creates the tree for the for loop
         if (increment !== null) { // If the increment is not null, the body is a block
             body = statement.blockStmt([body, statement.expressionStmt(increment)])
         }
@@ -203,7 +205,6 @@ console.log('inside the for statement in parser'.bgCyan)
         if (initializer !== null) { // If the initializer has a value, the body will be a statement block
             body = statement.blockStmt([initializer, body]);
         }
-        console.log('for loop has '.bgCyan, initializer, condition, body)
 
         return body;
     }
@@ -269,39 +270,39 @@ console.log('inside the for statement in parser'.bgCyan)
 
             return expression.unaryExpr(operator, right);
         }
-        return this.call();
+        return this.primary(); // change for this.call()
     }
 
-    call() {
-        let expr = this.primary();
+    // call() {
+    //     let expr = this.primary();
 
-        while (true) {
-            if (this.match([tokenType.LEFT_PAREN])) {
-                expr = this.finishCall(expr);
-            }
-            else {
-                break;
-            }
-        }
-        console.log('inside the call in parser', expr)
-        return expr;
-    }
+    //     while (true) {
+    //         if (this.match([tokenType.LEFT_PAREN])) {
+    //             expr = this.finishCall(expr);
+    //         }
+    //         else {
+    //             break;
+    //         }
+    //     }
+    //     console.log('inside the call in parser', expr)
+    //     return expr;
+    // }
 
-    finishCall(callee) {
-        const arguments = [];
+    // finishCall(callee) {
+    //     const arguments = [];
 
-        if (!this.check(tokenType.RIGHT_PAREN)) {
-            do {
-                if (arguments.length >= 255) {
-                    this.error(this.peek(), "Can't have more than 255 arguments.")
-                }
-                arguments.push(this.expression())
-            } while (this.match([tokenType.COMMA]))
-        }
-        const paren = this.consume(tokenType.RIGHT_PAREN, "Expect ')' after arguments.");
+    //     if (!this.check(tokenType.RIGHT_PAREN)) {
+    //         do {
+    //             if (arguments.length >= 255) {
+    //                 this.error(this.peek(), "Can't have more than 255 arguments.")
+    //             }
+    //             arguments.push(this.expression())
+    //         } while (this.match([tokenType.COMMA]))
+    //     }
+    //     const paren = this.consume(tokenType.RIGHT_PAREN, "Expect ')' after arguments.");
 
-        return expression.callExpr(callee, paren, arguments);
-    }
+    //     return expression.callExpr(callee, paren, arguments);
+    // }
 
     primary() {
         if (this.match([tokenType.FALSE])) return expression.literalExpr(false);

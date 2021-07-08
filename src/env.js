@@ -71,7 +71,12 @@ class Environment {
     iterateAndRead(obj, variable) {
 
         Object.keys(obj).forEach(key => {
-            console.log('inside iterate'.bgGreen, obj[key], 'obj is ', obj)
+            console.log('inside iterate and read'.bgGreen, obj[key], 'obj is ', obj)
+            if (obj.hasOwnProperty(variable)) {
+                console.log('inside new if stmt'.blue, obj)
+                value = obj[variable]
+                return value;
+            }
             if (obj[key] === variable) {
                 value = obj[variable]
                 return value;
@@ -82,7 +87,7 @@ class Environment {
                 return value;
             }
             if (obj[key].hasOwnProperty(variable)) {
-                console.log('tryign to find this key'.cyan, obj[key][variable])
+                console.log('tryign to find this key'.cyan, variable)
                 value = obj[key][variable];
                 return value;
             }
