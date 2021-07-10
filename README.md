@@ -82,10 +82,25 @@ Inside the parser, we look for the `var` keyword, , a variable name, and then fo
 
 ### Environment
 We need to bind the variable and its value. The easiest way is to create key-value pairs. 
-In Js, we can create simple objects, and create functions that will do the work we need on these objects: define, read, assign.
+We create an instance of the Environment class when the Interpreter is used. This instance will be stored outside of the Interpreter class and is the **global scope**.<br>
+For block scope, a new instance is created (when the block method fires) and the **current** environment (`this.env`) is passed to the constructor. Results an object with nested objects, inside nested objects.
 
 ### Assignment
-In the parser, we will call in `expression()` the assignment method, that will run the expression to check left and right side. It looks for an equal sign, checks if the type of expression is `variableExpr`, and perform the change for `assignExpr` type.
+In the parser, we will call in `expression()` the assignment method, that will run the expression to check left and right side. It looks for an equal sign, checks if the type of expression is `variableExpr`, and perform the change for `assignExpr` type.<br>
+In the environment, to assign a value, we *recursively* look for the correct variable name, starting at the current level (current environment), and going outside to the previous environment(s) until we find it.
+
+### Read the environment
+Like the previous paragraph Assignment, we read the environment and retrieve values by recursively looking at the current environment and its parents, until we find the variable we are looking for.
 
 ### Scope
-We first need to allow nesting of environments, to have access to outer scope from inside, but not the other way around. 
+The scope is created from `{}` (or blocks). Once the `blockStmt` node is created, the interpreter will create a new instance of the Environment class once the `getBlockStmt()` function is fired.  
+
+## Control Flow
+
+This portion added multiple nodes to the AST after parsing.<br>
+Logical operators, if/else and while statements each have their own AST node. The 'for loop', kept minimal and simple, does not have an AST node. It only gets its own method in the parser after the `FOR` token has been parsed. <br>
+The `forStatement` method handles building the AST with that are already present: <br>
+- initializer: creates a variable or an expression
+- condition: should be an expression (to be evaluated)
+- increment: should be an expression (variable gets assigned to a new value, performs an evaluation)
+- body: should be a statement, later assigned to a while loop that will evaluate the condition and the body previously made.

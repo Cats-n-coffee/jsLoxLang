@@ -270,39 +270,39 @@ console.log('inside the for statement in parser'.bgCyan)
 
             return expression.unaryExpr(operator, right);
         }
-        return this.primary(); // change for this.call()
+        return this.call(); // change from this.primary() before implementing functions
     }
 
-    // call() {
-    //     let expr = this.primary();
+    call() {
+        let expr = this.primary();
 
-    //     while (true) {
-    //         if (this.match([tokenType.LEFT_PAREN])) {
-    //             expr = this.finishCall(expr);
-    //         }
-    //         else {
-    //             break;
-    //         }
-    //     }
-    //     console.log('inside the call in parser', expr)
-    //     return expr;
-    // }
+        while (true) {
+            if (this.match([tokenType.LEFT_PAREN])) {
+                expr = this.finishCall(expr);
+            }
+            else {
+                break;
+            }
+        }
+        console.log('inside the call in parser', expr)
+        return expr;
+    }
 
-    // finishCall(callee) {
-    //     const arguments = [];
+    finishCall(callee) {
+        const argumentsArr = [];
 
-    //     if (!this.check(tokenType.RIGHT_PAREN)) {
-    //         do {
-    //             if (arguments.length >= 255) {
-    //                 this.error(this.peek(), "Can't have more than 255 arguments.")
-    //             }
-    //             arguments.push(this.expression())
-    //         } while (this.match([tokenType.COMMA]))
-    //     }
-    //     const paren = this.consume(tokenType.RIGHT_PAREN, "Expect ')' after arguments.");
+        if (!this.check(tokenType.RIGHT_PAREN)) {
+            do {
+                if (argumentsArr.length >= 255) {
+                    this.error(this.peek(), "Can't have more than 255 arguments.")
+                }
+                argumentsArr.push(this.expression())
+            } while (this.match([tokenType.COMMA]))
+        }
+        const paren = this.consume(tokenType.RIGHT_PAREN, "Expect ')' after arguments.");
 
-    //     return expression.callExpr(callee, paren, arguments);
-    // }
+        return expression.callExpr(callee, paren, argumentsArr);
+    }
 
     primary() {
         if (this.match([tokenType.FALSE])) return expression.literalExpr(false);

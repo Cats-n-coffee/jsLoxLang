@@ -6,7 +6,7 @@ const util = require('util');
 const { expression, statement } = require('./ast');
 const { RuntimeError } = require('./runtimeError');
 const { Environment } = require('./env');
-const { createEnvId } = require('./helpers');
+const { LoxCallable } = require('./loxCallable');
 const color = require('colors');
 const { tokenType } = require('./tokenType');
 
@@ -53,7 +53,6 @@ class Interpreter {
         console.log('inside print'.bgYellow, expr)
         const value = this.evaluate(expr.expression);
         console.log('printing your expression!'.bgYellow, value);
-        console.log('inside interpreter environment'.yellow, this.env)
         //process.stdout.write(this.stringify(value))
         return null;
     }
@@ -209,6 +208,17 @@ class Interpreter {
             let argument = expr.arguments[i];
             argumentsArr.push(this.evaluate(argument))
         }
+
+        if (!(callee instanceof LoxCallable)) {
+            throw new RuntimeError(expr.paren, "Can only call functions and classes.")
+        }
+
+        let newFunction = new LoxCallable(callee);
+        if (argumentsArr.length !== newFunction.arity()) {  // arity() should check for length
+            throw new RuntimeError(expr.paren, "Expected " + newFunction.arity() + " arguments, but got ", argumentsArr.length + ".")
+        }
+
+        return newFunction.call(this, argumentsArr);
     }
 
 // ----------------------------------- EVALUATE / EXECUTE --------------------------------------
