@@ -1,3 +1,21 @@
 [] command line args
 [] read files
 [] error from parser to interpreter and to entry file
+
+FUNCTIONS
+
+Function calls:
+- Figure out a way for create LoxCallable: create an instance from a child class, 
+and a parent class to extend?
+
+Native functions:
+- in Interpreter() method: define the clock 'native' function, defineEnvironemt(?) -> give a name and an 
+anonymous instance of the LoxCallable, and overwrite everything (arity, call, toString?)
+
+Function declaration:
+- in Parser: create function declaration and its own AST node (takes the name, params, body)
+ (created in function method)
+
+Function objects:
+- new class LoxFunction extends LoxCallable --> figure out what to do
+LoxFunction takes constructor with a param, and overwrites call in which it creates a new environemt.

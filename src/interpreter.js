@@ -201,12 +201,12 @@ class Interpreter {
     }
 
     getCallExpr(expr) {
-        const callee = this.evaluate(expr.callee);
+        const callee = this.evaluate(expr.callee); // Evaluates the callee from the AST
 
-        const argumentsArr = [];
+        const argumentsArr = []; // Stores the results of the evaluated arguments
         for (let i = 0; i < expr.arguments.length; i += 1) {
             let argument = expr.arguments[i];
-            argumentsArr.push(this.evaluate(argument))
+            argumentsArr.push(this.evaluate(argument)) // Evaluates each argument from the AST and pushes to a new arr
         }
 
         if (!(callee instanceof LoxCallable)) {
@@ -217,7 +217,10 @@ class Interpreter {
         if (argumentsArr.length !== newFunction.arity()) {  // arity() should check for length
             throw new RuntimeError(expr.paren, "Expected " + newFunction.arity() + " arguments, but got ", argumentsArr.length + ".")
         }
-
+        // newFunction here as an instance of LoxCallable
+        // the call method should compute a result
+        // callee gets converted to some sort of object, on which functions can be applied (class? proto? extend Function?)
+        
         return newFunction.call(this, argumentsArr);
     }
 
