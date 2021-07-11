@@ -13,8 +13,9 @@ class LoxCallable {
     }
 
     arity() {
-        
+        console.log('original arity')
     }
 }
+// https://stackoverflow.com/questions/359788/how-to-execute-a-javascript-function-when-i-have-its-name-as-a-string
 
 module.exports = { LoxCallable };

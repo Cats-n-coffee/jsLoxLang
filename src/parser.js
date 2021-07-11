@@ -15,13 +15,6 @@ class Parser {
 
     // This function is called inside JsLox class
     parse() {
-        // try {
-        //     return this.expression()
-        // }
-        // catch (e) {
-        //     // change for error function once made
-        //     console.log('error in parser', e);
-        // }
         const statements = [];
         while (!this.isAtEnd()) { 
             statements.push(this.declaration())
@@ -33,6 +26,7 @@ class Parser {
     // Checks for the 'var' keyword and creates a new variable declaration if true
     declaration() {
         try {
+            if (this.match([tokenType.FUN])) return this.function("function");
             if (this.match([tokenType.VAR])) return this.varDeclaration();
 
             return this.statement()
@@ -73,6 +67,26 @@ console.log('inside printStatement'.magenta, value)
         console.log('inside expressionStatement'.magenta, expr)
         this.consume(tokenType.SEMICOLON, "Expect ';' after expression.")
         return statement.expressionStmt(expr)
+    }
+
+    function(kind) {
+        let name = this.consume(tokenType.IDENTIFIER, "Exepect " + kind + " name.");
+        this.consume(tokenType.LEFT_PAREN, "Expect '(' after " + kind + " name.");
+
+        let parameters = [];
+        if (!this.check(tokenType.RIGHT_PAREN)) {
+            do {
+                if (parameters.length >= 255) {
+                    this.error(this.peek(), "Can't have more than 255 parameters");
+                }
+                parameters.push(this.consume(tokenType.IDENTIFIER, "Expect parameter name."));
+            } while (this.match([tokenType.COMMA]))
+        }
+        this.consume(tokenType.RIGHT_PAREN, "Expect ')' after parameters");
+        
+        this.consume(tokenType.LEFT_BRACE, "Expect '{' before " + kind + " body.");
+        let body = this.block();
+        return statement.functionDecl(name, parameters, body);
     }
 
     varDeclaration() {

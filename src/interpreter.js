@@ -10,8 +10,22 @@ const { LoxCallable } = require('./loxCallable');
 const color = require('colors');
 const { tokenType } = require('./tokenType');
 
+// This is the global scope/environment
 const globalEnv = new Environment(null);
+// We create a native function that overrides LoxCallable methods
+globalCallable = new LoxCallable(null);
+globalCallable.arity = function() {
+    return 0;
+}
+globalCallable.call = function(interpreter, newArguments) {
+    return Date.now();
+};
+globalCallable.convertToString = function() {
+    return "<native fn>";
+}
+globalEnv = globalEnv.defineEnvironment("clock", globalCallable);
 
+// Class interpreter starts here
 class Interpreter {
     constructor(loxInstance) {
         this.loxInstance = loxInstance,

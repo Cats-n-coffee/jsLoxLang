@@ -171,6 +171,18 @@ const statement = {
         console.log('inside while stmt'.red, util.inspect(whileObj, false, null, true))
         return whileObj;
     },
+
+    functionDecl: function(name, params, body) {
+        const functionObj = {
+            type: "functionDecl",
+            name: name, 
+            params: params, // array
+            body: body // array
+        }
+
+        console.log('inside the function decl ast'.red, functionObj)
+        return functionObj;
+    }
 }
 
 module.exports = { expression, statement }
