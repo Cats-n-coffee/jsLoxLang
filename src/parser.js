@@ -69,6 +69,8 @@ console.log('inside printStatement'.magenta, value)
         return statement.expressionStmt(expr)
     }
 
+    // Creates a 'functionDecl' AST node.
+    // 'kind' is either a function or class method
     function(kind) {
         let name = this.consume(tokenType.IDENTIFIER, "Exepect " + kind + " name.");
         this.consume(tokenType.LEFT_PAREN, "Expect '(' after " + kind + " name.");

@@ -23,7 +23,7 @@ globalCallable.call = function(interpreter, newArguments) {
 globalCallable.convertToString = function() {
     return "<native fn>";
 }
-globalEnv = globalEnv.defineEnvironment("clock", globalCallable);
+globalEnv.defineEnvironment("clock", globalCallable);
 
 // Class interpreter starts here
 class Interpreter {
@@ -31,6 +31,7 @@ class Interpreter {
         this.loxInstance = loxInstance,
         this.env = globalEnv;
         this.scopeEnv = null;
+        this.globalEnv = globalEnv;
     }
 
     interpret(statements) {
