@@ -11,12 +11,20 @@ class LoxFunction extends LoxCallable {
         this.declaration = declaration;
     }
 
+    arity() {
+        return this.declaration.parameters.length;
+    }
+
+    convertToString() {
+        return "<fn" + this.declaration.name.lexeme + ">";
+    }
+
     call(interpreter, args){
         let env = new Environment(interpreter.globalEnv);
         for (let i = 0; i < this.declaration.parameters.length; i += 1) {
             env.defineEnvironment(this.declaration.parameters[i].lexeme, args[i]);
         }
-        interpreter.executeBlock(declaration.body, env);
+        interpreter.executeBlock(this.declaration.body, env);
         return null;
     }
 }

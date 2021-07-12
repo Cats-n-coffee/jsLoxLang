@@ -9,6 +9,7 @@ const { Environment } = require('./env');
 const { LoxCallable } = require('./loxCallable');
 const color = require('colors');
 const { tokenType } = require('./tokenType');
+const { LoxFunction } = require('./loxFunction');
 
 // This is the global scope/environment
 const globalEnv = new Environment(null);
@@ -239,6 +240,14 @@ class Interpreter {
         return newFunction.call(this, argumentsArr);
     }
 
+    getFunctionDecl(stmt) {
+        console.log('inside getFunctionDecl'.bgMagenta, util.inspect(stmt, false, null, true))
+        const func = new LoxFunction(stmt);
+        
+        this.env.defineEnvironment(stmt.name.lexeme, func);
+        return null;
+    }
+
 // ----------------------------------- EVALUATE / EXECUTE --------------------------------------
     // Directs to the appropriate method to perform the operation. It matches the 'type' given when building the AST
     evaluate(expr) {
@@ -257,6 +266,7 @@ class Interpreter {
             case "logicalExpr": return this.getLogicalExpr(expr);
             case "whileStmt": return this.getWhileStmt(expr);
             case "callExpr": return this.getCallExpr(expr);
+            case "functionDecl": return this.getFunctionDecl(expr);
             default:
                 throw new RuntimeError(expr, "Cannot evaluate expression or statement.")
         }
@@ -331,3 +341,5 @@ module.exports = { Interpreter }
 // var a = 1; a = a + 1; a = a + 1; print a;
 // var a = 1; for (var i = 1;a < 5; i = i + 1){ print i; print a;}
 // for (var i = 0; i < 5;i = i + 1)print i;
+
+// fun hi(first, last){print "Hi" + first + last + "!";} hi("pretty", "cat");
