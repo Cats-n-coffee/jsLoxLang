@@ -3,13 +3,12 @@ This file holds the interpreter class.
 It evaluates statements and expressions that were built into the AST form.
 */
 const util = require('util');
-const { expression, statement } = require('./ast');
 const { RuntimeError } = require('./runtimeError');
 const { Environment } = require('./env');
-const { LoxCallable } = require('./loxCallable');
 const color = require('colors');
 const { tokenType } = require('./tokenType');
 const { LoxFunction } = require('./loxFunction');
+const { Return } = require('./return');
 
 // This is the global scope/environment
 const globalEnv = new Environment(null);
@@ -71,6 +70,15 @@ class Interpreter {
         console.log('printing your expression!'.bgYellow, value);
         //process.stdout.write(this.stringify(value))
         return null;
+    }
+
+    getReturnStmt(stmt) {
+        let value = null;
+        if (stmt.value !== null) {
+            value = this.evaluate(stmt.value);
+        }
+
+        throw new Return(value);
     }
 
     getVarStmt(stmt) {
@@ -240,7 +248,7 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
 
     getFunctionDecl(stmt) {
         console.log('inside getFunctionDecl'.bgMagenta, util.inspect(stmt, false, null, true))
-        const func = new LoxFunction(stmt);
+        const func = new LoxFunction(stmt, this.env);
 
         this.env.defineEnvironment(stmt.name.lexeme, func);
         return null;
@@ -265,6 +273,7 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
             case "whileStmt": return this.getWhileStmt(expr);
             case "callExpr": return this.getCallExpr(expr);
             case "functionDecl": return this.getFunctionDecl(expr);
+            case "returnStmt": return this.getReturnStmt(expr);
             default:
                 throw new RuntimeError(expr, "Cannot evaluate expression or statement.")
         }
@@ -341,3 +350,6 @@ module.exports = { Interpreter }
 // for (var i = 0; i < 5;i = i + 1)print i;
 
 // fun hi(first){print "Hi" + first;} hi("pretty");
+// --> infinite loop:  fun fib(n){if (n <= 1) return n; return fib(n - 2) + fib(n - 1);} for (var i =0; i < 20; i = i + 1){print fib(i);}
+// fun fib(n){if (n <= 1) return n; return fib(n - 2) + fib(n - 1);} fib(10);
+// fun makeCounter(){var i = 0; fun count(){ i = i + 1; print i;} return count;} var counter = makeCounter(); counter(); counter();

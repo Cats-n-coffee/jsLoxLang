@@ -3,11 +3,11 @@ This class extends LoxCallable to use the methods
  */
 
 const { Environment } = require("./env");
-const { LoxCallable } = require("./loxCallable");
 
 class LoxFunction {
-    constructor(declaration){
+    constructor(declaration, closure){
         this.declaration = declaration;
+        this.closure = closure; 
     }
 
     arity() {
@@ -21,12 +21,19 @@ class LoxFunction {
 
     call(interpreter, args){
         console.log('inside LoxFunction'.bgYellow, interpreter, 'args are'.bgYellow, args)
-        let env = new Environment(interpreter.globalEnv);
+        let env = new Environment(this.closure);
         for (let i = 0; i < this.declaration.params.length; i += 1) {
             console.log('inside LoxFunction inside for loop'.bgYellow, this.declaration.params[i])
             env.defineEnvironment(this.declaration.params[i].lexeme, args[i]);
         }
-        interpreter.executeBlock(this.declaration.body, env);
+
+        try {
+            interpreter.executeBlock(this.declaration.body, env);
+        }
+        catch (returnValue) {
+            return returnValue.value;
+        }
+        
         return null;
     }
 }
