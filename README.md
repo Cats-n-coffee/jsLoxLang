@@ -104,3 +104,39 @@ The `forStatement` method handles building the AST with that are already present
 - condition: should be an expression (to be evaluated)
 - increment: should be an expression (variable gets assigned to a new value, performs an evaluation)
 - body: should be a statement, later assigned to a while loop that will evaluate the condition and the body previously made.
+
+## Functions
+
+### Function Calls
+Function calls are high precedence, so they are added to the unary method in the parser. The function call's operator is `(`. <br>
+Function calls get their own AST node, using the callee (expression), right parenthesis (for error handling), and arguments (an array). During parsing, if the parser encounters a `(`, it will call `finishCall()` which will create the AST node for the function call. <br>
+In the interpreter, the type matched will be "CallExpr", and will call the `getCallExpr()` method. This method does multiple tasks: <br>
+- Evaluates the expression for the callee,
+- Evaluates each argument and stores the value in an array,
+- Calls the callee, which should be an instance of `LoxFunction` class, from the function declaration.
+
+### Native Functions
+Only one native is implemented, the `clock()` function. It is attached to the global scope.
+
+### Function Declarations
+They are declarations and attached to a name, so they go on the 'declarations' level (along variable declarations and statements). <br>
+In the parser once we encounter the `fun` keyword, it triggers the `function()` method which takes a 'kind' (of function) as a parameter. The 'kind' refers to the function being a function declaration or a class method. The `function()` method parser the whole function decalration: <br>
+- The name should be an identifier
+- It finds the opening and closing parentheses
+- It creates an array of tokens with the arguments, using commas to know if there are more.
+- It parses the body, looking for `{`, then call `block()` (which expects `{` to have already been consumed). We call `block()` directly because it already knows how to treat code inside `{}` (in this case we are in a function body, not inside a block statement).<br>
+
+An AST node for `functionDecl` is then created using the name, parameters and body.
+
+### Function Objects
+We need to bind the parameters with the arguments once the function is called.<br>
+Each function has its own environment where it stores its variables, but it is actually the function **call** that gets its own environment, so recursion can happen (it there are multiple call to the same function, they *each* get their own environment).<br>
+In the interpreter once we encounter the type `functionDecl`, we call the `getFunctionDecl()` method which creates a new instance of the `LoxFunction` class. <br>
+
+`LoxFunction` class: <br>
+- `arity()`: checks the parameters length,
+- `convertToString()`: converts the function's name to a string,
+- `call()`: creates a new environment for the function and executes the body.<br>
+The result from a function call will be bind to a variable, so in the interpreter at `getFunctionDecl()` we pass the instance of `LoxFunction` to the current environment.
+
+### Return Statements

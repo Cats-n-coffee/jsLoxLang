@@ -182,6 +182,17 @@ const statement = {
 
         console.log('inside the function decl ast'.red, functionObj)
         return functionObj;
+    },
+
+    returnStmt: function(keyword, value) {
+        const returnObj = {
+            type: "returnStmt",
+            keyword: keyword,
+            value: value
+        }
+
+        console.log('inside the return stmt ast'.red, returnObj);
+        return returnObj;
     }
 }
 

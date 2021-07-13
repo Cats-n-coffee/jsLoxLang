@@ -44,6 +44,7 @@ class Parser {
         if (this.match([tokenType.FOR])) return this.forStatement();
         if (this.match([tokenType.IF])) return this.ifStatement();
         if (this.match([tokenType.PRINT])) return this.printStatement();
+        if (this.match([tokenType.RETURN])) return this.returnStatement();
         if (this.match([tokenType.WHILE])) return this.whileStatement();
         if (this.match([tokenType.LEFT_BRACE])) return statement.blockStmt(this.block());
 
@@ -89,6 +90,18 @@ console.log('inside printStatement'.magenta, value)
         this.consume(tokenType.LEFT_BRACE, "Expect '{' before " + kind + " body.");
         let body = this.block();
         return statement.functionDecl(name, parameters, body);
+    }
+
+    returnStatement() {
+        let keyword = this.previous();
+        let value = null;
+
+        if (!this.check(tokenType.SEMICOLON)) {
+            value = this.expression();
+        }
+
+        this.consume(tokenType.SEMICOLON, "Expect ';' after return value.");
+        return statement.returnStmt(keyword, value);
     }
 
     varDeclaration() {

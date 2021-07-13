@@ -5,14 +5,14 @@ This class extends LoxCallable to use the methods
 const { Environment } = require("./env");
 const { LoxCallable } = require("./loxCallable");
 
-class LoxFunction extends LoxCallable {
+class LoxFunction {
     constructor(declaration){
-        super();
         this.declaration = declaration;
     }
 
     arity() {
-        return this.declaration.parameters.length;
+        console.log('in arity length is'.bgYellow, this.declaration.params.length)
+        return this.declaration.params.length;
     }
 
     convertToString() {
@@ -20,9 +20,11 @@ class LoxFunction extends LoxCallable {
     }
 
     call(interpreter, args){
+        console.log('inside LoxFunction'.bgYellow, interpreter, 'args are'.bgYellow, args)
         let env = new Environment(interpreter.globalEnv);
-        for (let i = 0; i < this.declaration.parameters.length; i += 1) {
-            env.defineEnvironment(this.declaration.parameters[i].lexeme, args[i]);
+        for (let i = 0; i < this.declaration.params.length; i += 1) {
+            console.log('inside LoxFunction inside for loop'.bgYellow, this.declaration.params[i])
+            env.defineEnvironment(this.declaration.params[i].lexeme, args[i]);
         }
         interpreter.executeBlock(this.declaration.body, env);
         return null;

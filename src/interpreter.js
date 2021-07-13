@@ -14,17 +14,17 @@ const { LoxFunction } = require('./loxFunction');
 // This is the global scope/environment
 const globalEnv = new Environment(null);
 // We create a native function that overrides LoxCallable methods
-globalCallable = new LoxCallable(null);
-globalCallable.arity = function() {
-    return 0;
-}
-globalCallable.call = function(interpreter, newArguments) {
-    return Date.now();
-};
-globalCallable.convertToString = function() {
-    return "<native fn>";
-}
-globalEnv.defineEnvironment("clock", globalCallable);
+// globalCallable = new LoxCallable(null);
+// globalCallable.arity = function() {
+//     return 0;
+// }
+// globalCallable.call = function(interpreter, newArguments) {
+//     return Date.now();
+// };
+// globalCallable.convertToString = function() {
+//     return "<native fn>";
+// }
+// globalEnv.defineEnvironment("clock", globalCallable);
 
 // Class interpreter starts here
 class Interpreter {
@@ -39,9 +39,9 @@ class Interpreter {
         console.log('/////////////////////////////////////////////////'.bgBlue)
         console.log('please, interpreter interpret'.bgRed, util.inspect(statements, false, null, true));
         console.log('/////////////////////////////////////////////////'.bgBlue)
-        if (statements === undefined) {
-            console.log('error at runtime inside interpreter, statement is undefined'.bgGreen)
-        };
+        // if (statements === undefined) {
+        //     console.log('error at runtime inside interpreter, statement is undefined'.bgGreen)
+        // };
         try {
             if (statements !== undefined) {
                 for (let i = 0; i < statements.length; i += 1) {
@@ -55,7 +55,7 @@ class Interpreter {
         }
         catch (err) {
             console.log('error at runtime inside interpreter'.bgRed, err)
-            console.log(new RuntimeError(statements, "Unable to read input.", "2nd console.log"))
+            console.log(new RuntimeError(statements, "Unable to read input.", "In interpret, statements might be undefined"))
             //return new RuntimeError(expr, "Unable to read input.");
         }
     }
@@ -218,32 +218,30 @@ class Interpreter {
 
     getCallExpr(expr) {
         const callee = this.evaluate(expr.callee); // Evaluates the callee from the AST
-
+console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bgMagenta, expr.callee)
         const argumentsArr = []; // Stores the results of the evaluated arguments
         for (let i = 0; i < expr.arguments.length; i += 1) {
             let argument = expr.arguments[i];
             argumentsArr.push(this.evaluate(argument)) // Evaluates each argument from the AST and pushes to a new arr
         }
 
-        if (!(callee instanceof LoxCallable)) {
+        if (!(callee instanceof LoxFunction)) {
             throw new RuntimeError(expr.paren, "Can only call functions and classes.")
         }
 
-        let newFunction = new LoxCallable(callee);
-        if (argumentsArr.length !== newFunction.arity()) {  // arity() should check for length
-            throw new RuntimeError(expr.paren, "Expected " + newFunction.arity() + " arguments, but got ", argumentsArr.length + ".")
+        //let newFunction = new LoxFunction(callee);
+        console.log('newFunction arity is '.bgYellow, callee)
+        if (argumentsArr.length !== callee.arity()) {  // arity() should check for length of arguments
+            throw new RuntimeError(expr.paren, "Expected " + callee.arity() + " arguments, but got ", argumentsArr.length + ".")
         }
-        // newFunction here as an instance of LoxCallable
-        // the call method should compute a result
-        // callee gets converted to some sort of object, on which functions can be applied (class? proto? extend Function?)
         
-        return newFunction.call(this, argumentsArr);
+        return callee.call(this, argumentsArr); // 'callee' eventually becomes an instance of LoxFunction?
     }
 
     getFunctionDecl(stmt) {
         console.log('inside getFunctionDecl'.bgMagenta, util.inspect(stmt, false, null, true))
         const func = new LoxFunction(stmt);
-        
+
         this.env.defineEnvironment(stmt.name.lexeme, func);
         return null;
     }
@@ -342,4 +340,4 @@ module.exports = { Interpreter }
 // var a = 1; for (var i = 1;a < 5; i = i + 1){ print i; print a;}
 // for (var i = 0; i < 5;i = i + 1)print i;
 
-// fun hi(first, last){print "Hi" + first + last + "!";} hi("pretty", "cat");
+// fun hi(first){print "Hi" + first;} hi("pretty");
