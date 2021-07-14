@@ -32,6 +32,7 @@ class Interpreter {
         this.env = globalEnv;
         this.scopeEnv = null;
         this.globalEnv = globalEnv;
+        this.locals = new Map();
     }
 
     interpret(statements) {
@@ -94,7 +95,13 @@ class Interpreter {
 
     getAssignExpr(expr) {
         const value = this.evaluate(expr.value);
-        this.env.assign(expr.name, value);
+        //this.env.assign(expr.name, value);
+        let distance  = this.locals.get(expr);
+        if (distance !== null) {
+            this.env.assignAt(distance, expr.name, value);
+        } else {
+            this.globalEnv.assign(expr.name, value);
+        }
         return value;
     } 
 
@@ -164,7 +171,8 @@ class Interpreter {
 
     getVariableExpr(expr){
         console.log('inside variable expression'.bgCyan, expr)
-        return this.env.readEnvironment(expr.name.lexeme)
+        //return this.env.readEnvironment(expr.name.lexeme)
+        return this.lookUpVariable(expr.name, expr);
     }
 
     // Calls evaluate() on the left and right sides of the expression, then performs the appropriate operation inside the swicth
@@ -279,6 +287,10 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
         }
     }
 
+    resolve(expr, depth) {
+        this.locals.set(expr, depth);
+    }
+
     executeBlock(statements, scopeEnv) {
         let previous = this.env;
         
@@ -322,6 +334,15 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
         }
 
         return JSON.stringify(obj);
+    }
+
+    lookUpVariable(name, expr) {
+        let distance = this.locals.get(expr);
+        if (distance !== null) {
+            return this.env.getAt(distance, name.lexeme);
+        } else {
+            return this.globalEnv[name];
+        }
     }
 
 // ----------------------------------- ERROR HANDLING ------------------------------------

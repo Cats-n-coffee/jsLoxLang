@@ -47,25 +47,31 @@ class Environment {
         throw new RuntimeError(variable, "Undefined variable '" + variable.lexeme + "' .")
     }
 
+    getAt(distance, name) {
+        return this.ancestor(distance).values[name];
+    }
+
+    ancestor(distance) {
+        let environment = this;
+        for (let i = 0; i < distance; i += 1) {
+            console.log('inside the ancestor method, environment.parent is'.bgBlue, environment.parent)
+            environment = environment.parent;
+        }
+        return environment;
+    }
+
     assign(name, newValue) {
         console.log('inside the env assign function, name is'.bgCyan, name, 'value is'.bgCyan, newValue, 'current env is ', this)
-        // if (this.hasOwnProperty(name.lexeme)) {
-        //     this[name.lexeme] = value;
-        //     console.log('our enviuronemtn'.red, this)
-        //     return;
-        // }
-        // else {
-        //     const scope = this.iterateAndAssign(this, name.lexeme, newValue)
-        //     console.log(scope)
-        //     this[name.lexeme] = scope;
-        // }
-
         while (this !== null || this !== undefined) {
             const changeVal = this.iterateAndAssign(this, name.lexeme, newValue)
             console.log('at assign Env'.bgMagenta, changeVal)
             return changeVal;
         }
         throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "' .");
+    }
+
+    assignAt(distance, name, value) {
+        this.ancestor(distance).values[name.lexeme] = value;
     }
 
     iterateAndRead(obj, variable) {

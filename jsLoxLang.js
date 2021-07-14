@@ -9,11 +9,13 @@ const readline = require('readline');
 const { Scanner } = require('./src/scanner');
 const { Parser } = require('./src/parser');
 const { Interpreter } = require('./src/interpreter');
+const { Resolver } = require('./src/resolver');
 
 class JsLox {
     constructor(rawCode) {
         this.rawCode = rawCode;
         this.hadError = false;
+        this.interpreter = new Interpreter(this);
     }
 // Do extra check to ensure only a string is contained in the array?
     main() {
@@ -85,8 +87,10 @@ class JsLox {
         const statements = parser.parse();
         console.log('expression parsed in JsLox', statements);
 
-        const interpreter = new Interpreter(this);
-        interpreter.interpret(statements);
+        const resolver = new Resolver(this.interpreter, this);
+        resolver.resolve(statements)
+        
+        this.interpreter.interpret(statements);
     }
 
     error(line, message) {
