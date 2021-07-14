@@ -140,3 +140,13 @@ In the interpreter once we encounter the type `functionDecl`, we call the `getFu
 The result from a function call will be bind to a variable, so in the interpreter at `getFunctionDecl()` we pass the instance of `LoxFunction` to the current environment.
 
 ### Return Statements
+They are returned as instance of their own class (`Return`), which extends the Javascript Error class. They return the value passed to the instance or return an error (runtime exception supposedly).
+
+### Closures
+To allow for closures to happen and look at the current environment, the `LoxFunction` instance with get a new parameter: the current environment. 
+
+## Resolving and Binding
+
+### Resolver class
+This class will be between the parser and interpreter. It will walk down the syntax tree and resolve any variable in it, allowing for variables to be available ahead of time, so closures can find the correct ones.<br>
+Since this class will down the syntax tree, it will implement some of them, just like the interpreter does.
