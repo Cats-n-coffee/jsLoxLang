@@ -11,7 +11,6 @@ const color = require('colors');
 const expression = {
 
     binaryExpr: function(left, operator, right) {
-
         const binaryObj = {
             type: "binaryExpr",
             left: left?.type === "binaryExpr" ? left : left?.left || left,
@@ -36,8 +35,6 @@ const expression = {
     },
 
     literalExpr: function(value) {
-        console.log('in literal expression'.red, value)
-
         const literalObj = {
             type: "literalExpr",
             value: value?.value || value
@@ -47,8 +44,6 @@ const expression = {
     },
 
     groupingExpr: function(group) {
-        console.log('in grouping expression'.red, group)
-
         const groupingObj = {
             type: "groupingExpr",
             group: group
@@ -107,7 +102,6 @@ const expression = {
 const statement = {
 
     expressionStmt: function(expr) {
-        console.log('in expression statement this is expr'.red, expr)
         const expressionObj = {
             type: "expressionStmt",
             expression: expr
@@ -139,7 +133,6 @@ const statement = {
     },
 
     blockStmt: function ([...statements]) {
-        console.log('inside block stmt this is the array'.red, ...statements)
         const blockObj = {
             type: "blockStmt",
             statements: statements
