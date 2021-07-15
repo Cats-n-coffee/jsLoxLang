@@ -3,6 +3,8 @@
 This is my version of the Lox language from Crafting Interpreters in Javascript.
 I wrote most of my notes in this ReadMe, so this ReadMe shows what I understand from writing this interpreter, some definitions, some important notes from the author of Crafting Inpreters about the way certains parts are implemented, as well as useful notes on how I implemented it in Js.
 
+<img src="./ezgif.com-gif-maker.gif" alt="jsLoxLang demo" width="auto" height="400">
+
 ## JsLox class - Entry file
   - Main method: "directs" the given input: uses the array length to return an error, read from file or run the prompt. When creating an instance of `JsLox` at the bottom of `jsLoxLang.js`, we pass it the arguments from the command line. In the constructor of `JsLox`, `this.rawCode` takes those arguments and removes the first two (which are the paths for Node and the program `jsLoxLang.js`, so we can discard them).
   - runFile method: read the file, transforms the bytes to a string. 
