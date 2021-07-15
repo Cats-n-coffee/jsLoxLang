@@ -188,7 +188,7 @@ class Parser {
 
     forStatement() {
         this.consume(tokenType.LEFT_PAREN, "Expect '(' after 'for'.");
-console.log('inside the for statement in parser'.bgCyan)
+//console.log('inside the for statement in parser'.bgCyan)
         // Creates the initializer
         let initializer;
         if (this.match([tokenType.SEMICOLON])) {
@@ -308,7 +308,7 @@ console.log('inside the for statement in parser'.bgCyan)
                 break;
             }
         }
-        console.log('inside the call in parser', expr)
+        //console.log('inside the call in parser', expr)
         return expr;
     }
 

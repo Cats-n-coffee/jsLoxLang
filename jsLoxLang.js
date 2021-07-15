@@ -31,23 +31,22 @@ class JsLox {
             this.runFile(this.rawCode[0]);
         }
         else {
-            console.log('let\s run a prompt with this', this.rawCode);
+            //console.log('let\s run a prompt with this', this.rawCode);
             this.runPrompt();
         }
     }
 
     runFile(givenArg) {
-        console.log('inside the runfile function', givenArg)
+        //console.log('inside the runfile function', givenArg)
         if (this.hadError === true) {
             process.exit(0)
         }
         const fileContents = fs.readFileSync(`/Users/luciemacaigne/Desktop/jsLoxLang/jsLoxTests/${givenArg}`, 'utf-8');
-        console.log('reading the file', fileContents)
+        //console.log('reading the file', fileContents)
         this.run(fileContents)
     }
 
     runPrompt() {
-        console.log('inside the runprompt function');
 
         //let inputStr = '';
         
@@ -61,7 +60,7 @@ class JsLox {
         rl.on("line", userInput => {
             let currentInput = '';
             currentInput += userInput;
-            process.stdout.write(currentInput);
+            //process.stdout.write(currentInput);
             this.run(currentInput)
             this.hadError = false;
             
@@ -86,14 +85,14 @@ class JsLox {
 
         const resolver = new Resolver(this.interpreter, this);
         resolver.resolve(statements)
-        console.log('in Jslox after the resolver instance'.magenta, statements)
+        
         if (this.hadError) return;
 
         this.interpreter.interpret(statements);
     }
 
     error(line, message) {
-        console.log('in the error method in jslox')
+        //console.log('in the error method in jslox')
         return this.report(line, "", message)
     }
 

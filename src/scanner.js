@@ -22,7 +22,7 @@ class Scanner {
         }
 
         this.tokens.push(new Token(tokenType.EOF, "", null, this.line));
-        console.log('all the tokens', this.tokens)
+        //console.log('all the tokens', this.tokens)
         return this.tokens;
     }
 
@@ -70,7 +70,7 @@ class Scanner {
                     this.identifier();
                 }
                 else {
-                    console.log('in default switch, there is an error', this.line);
+                    //console.log('in default switch, there is an error', this.line);
                     return this.loxInstance.error(this.line, "Unexpected character.");
                 } 
                 // Have the following error statmemnt inside an else? check with main class

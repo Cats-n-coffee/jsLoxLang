@@ -36,9 +36,9 @@ class Interpreter {
     }
 
     interpret(statements) {
-        console.log('/////////////////////////////////////////////////'.bgBlue)
-        console.log('please, interpreter interpret'.bgRed, util.inspect(statements, false, null, true));
-        console.log('/////////////////////////////////////////////////'.bgBlue)
+        //console.log('/////////////////////////////////////////////////'.bgBlue)
+        //console.log('please, interpreter interpret'.bgRed, util.inspect(statements, false, null, true));
+        //console.log('/////////////////////////////////////////////////'.bgBlue)
         // if (statements === undefined) {
         //     console.log('error at runtime inside interpreter, statement is undefined'.bgGreen)
         // };
@@ -54,22 +54,22 @@ class Interpreter {
             }
         }
         catch (err) {
-            console.log('error at runtime inside interpreter'.bgRed, err)
-            console.log(new RuntimeError(statements, "Unable to read input.", "In interpret, statements might be undefined"))
-            //return new RuntimeError(expr, "Unable to read input.");
+            //console.log('error at runtime inside interpreter'.bgRed, err)
+            //console.log(new RuntimeError(statements, "Unable to read input.", "In interpret, statements might be undefined"))
+            return new RuntimeError(expr, "Unable to read input.");
         }
     }
 // ----------------------------- STATEMENTS / ASSIGNMENT EVALUATION -------------------------------
     getExpression(expr) {
-        console.log('inside get epxres'.bgYellow, expr.expression)
+        //console.log('inside get epxres'.bgYellow, expr.expression)
         return this.evaluate(expr.expression);
     }
 
     getPrint(expr) {
-        console.log('inside print'.bgYellow, expr)
+        //console.log('inside print'.bgYellow, expr)
         const value = this.evaluate(expr.expression);
-        console.log('printing your expression!'.bgYellow, value);
-        //process.stdout.write(this.stringify(value))
+        console.log(value);
+        //process.stdout.write(JSON.stringify(value));
         return null;
     }
 
@@ -89,7 +89,7 @@ class Interpreter {
         }
         
         this.env.defineEnvironment(stmt.name.lexeme, value)
-        console.log('inside the varstmt checking the env'.yellow, this.env, 'fron outisde', globalEnv)
+        //console.log('inside the varstmt checking the env'.yellow, this.env, 'fron outisde', globalEnv)
         return null;
     }
 
@@ -106,14 +106,14 @@ class Interpreter {
     } 
 
     getBlockStmt(stmt) {
-        console.log('inside interpreter looking at statement', stmt)
+        //console.log('inside interpreter looking at statement', stmt)
         const newBlock = new Environment(this.env)
         this.executeBlock(stmt.statements, newBlock);
         return null
     }
 
     getIfStmt(stmt) {
-        console.log('inside interpreter at if stmt', stmt)
+        //console.log('inside interpreter at if stmt', stmt)
         if (this.isTruthy(this.evaluate(stmt.condition))) {
             this.evaluate(stmt.thenBranch);
         } 
@@ -146,20 +146,20 @@ class Interpreter {
 // ------------------------------ EXPRESSION EVALUATION ----------------------------------
     // Returns the value
     getLiteralExpr(expr) {
-        console.log('inside getliteral in interpreter '.blue, expr.value)
+        //console.log('inside getliteral in interpreter '.blue, expr.value)
         return expr.value; // ex: { type: "literalExpr", value: 1 } --> returns 1
     }
 
     // "steps" inside the parentheses and calls evaluate() to "unpack" the inside expression
     getGroupingExpr(expr) {
-        console.log('in grouping interpreter'.blue, expr.group)
+        //console.log('in grouping interpreter'.blue, expr.group)
         return this.evaluate(expr.group)
     }
 
     // Calls evaluate() on the right side of the expression to be further evaluated, then performs the operation inside the switch
     getUnaryExpr(expr) {
         let right = this.evaluate(expr.right);
-        console.log('inside interpreter unary right value'.blue, right, 'unary operator'.blue, expr.operator.type)
+        //console.log('inside interpreter unary right value'.blue, right, 'unary operator'.blue, expr.operator.type)
 
         switch(expr.operator.type) {
             case "BANG": return !this.isTruthy(right);
@@ -170,7 +170,7 @@ class Interpreter {
     }
 
     getVariableExpr(expr){
-        console.log('inside variable expression'.bgCyan, expr)
+        //console.log('inside variable expression'.bgCyan, expr)
         //return this.env.readEnvironment(expr.name.lexeme)
         return this.lookUpVariable(expr.name, expr);
     }
@@ -179,7 +179,7 @@ class Interpreter {
     getBinaryExpr(expr) {
         const left = this.evaluate(expr.left);
         const right = this.evaluate(expr.right);
-        console.log('inside getbinary in interpreter'.blue, expr, 'left value is '.blue, left, 'right value is '.blue, right)
+        //console.log('inside getbinary in interpreter'.blue, expr, 'left value is '.blue, left, 'right value is '.blue, right)
 
         switch(expr.operator.type) {
             case "GREATER": {
@@ -202,11 +202,10 @@ class Interpreter {
             case "EQUAL_EQUAL": return this.isEqual(left, right);
             case "MINUS": {
                 this.checkNumberOperands(left, expr.operator, right);
-                console.log('doing the math'.bgBlue, left-right)
+                
                 return left - right
             };
             case "PLUS": { 
-                console.log('inside addition looking for my datatype'.blue, typeof left, 'right'.blue, typeof right)
                 if (typeof left === 'string' && typeof right === 'string') {
                     return left + right;
                 }
@@ -219,7 +218,6 @@ class Interpreter {
             };
             case "SLASH": {
                 this.checkNumberOperands(left, expr.operator, right);
-                console.log('result from divison is'.blue, left / right)
                 return left / right
             };
             case "STAR": {
@@ -234,7 +232,7 @@ class Interpreter {
 
     getCallExpr(expr) {
         const callee = this.evaluate(expr.callee); // Evaluates the callee from the AST
-console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bgMagenta, expr.callee)
+//console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bgMagenta, expr.callee)
         const argumentsArr = []; // Stores the results of the evaluated arguments
         for (let i = 0; i < expr.arguments.length; i += 1) {
             let argument = expr.arguments[i];
@@ -245,8 +243,6 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
             throw new RuntimeError(expr.paren, "Can only call functions and classes.")
         }
 
-        //let newFunction = new LoxFunction(callee);
-        console.log('newFunction arity is '.bgYellow, callee)
         if (argumentsArr.length !== callee.arity()) {  // arity() should check for length of arguments
             throw new RuntimeError(expr.paren, "Expected " + callee.arity() + " arguments, but got ", argumentsArr.length + ".")
         }
@@ -255,7 +251,7 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
     }
 
     getFunctionDecl(stmt) {
-        console.log('inside getFunctionDecl'.bgMagenta, util.inspect(stmt, false, null, true))
+        //console.log('inside getFunctionDecl'.bgMagenta, util.inspect(stmt, false, null, true))
         const func = new LoxFunction(stmt, this.env);
 
         this.env.defineEnvironment(stmt.name.lexeme, func);
@@ -288,9 +284,9 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
     }
 
     resolve(expr, depth) {
-        console.log('inside interpreter at resolve'.bgGreen, expr, 'depth is', depth)
+        //console.log('inside interpreter at resolve'.bgGreen, expr, 'depth is', depth)
         this.locals.set(expr, depth);
-        console.log('in interpreter at resolve'.cyan, this.locals)
+        //console.log('in interpreter at resolve'.cyan, this.locals)
     }
 
     executeBlock(statements, scopeEnv) {
@@ -299,15 +295,14 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
         try {
             this.env = scopeEnv;
             for (let i = 0; i < statements.length; i += 1){
-                console.log('each stmt'.bgMagenta, statements[i])
 
                 this.evaluate(statements[i])
             }
-            console.log('environemtn is currently '.yellow, this.env, 'global is ', globalEnv)
+            //console.log('environemtn is currently '.yellow, this.env, 'global is ', globalEnv)
         }
         finally {
             this.env = previous;
-            console.log('inside finally in executeBlock newnev is', previous)
+            //console.log('inside finally in executeBlock newnev is', previous)
         }
     }
 
@@ -339,7 +334,7 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
     }
 
     lookUpVariable(name, expr) {
-        console.log('inside interpreter looktup var'.bgGreen, name, 'expr', expr, 'locals are '.bgGreen, this.locals)
+        //console.log('inside interpreter looktup var'.bgGreen, name, 'expr', expr, 'locals are '.bgGreen, this.locals)
         let distance = this.locals.get(expr);
         if (distance !== null || distance !== undefined) {
             return this.env.getAt(distance, name.lexeme);
