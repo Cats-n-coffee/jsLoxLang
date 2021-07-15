@@ -48,10 +48,13 @@ class Environment {
     }
 
     getAt(distance, name) {
-        return this.ancestor(distance).values[name];
+        console.log('inside environm at getAt'.bgGreen, distance, 'name', name);
+        console.log('getAt second line',typeof this.ancestor(distance))
+        return this.ancestor(distance)[name];
     }
 
     ancestor(distance) {
+        console.log('in ancestor'.magenta, distance)
         let environment = this;
         for (let i = 0; i < distance; i += 1) {
             console.log('inside the ancestor method, environment.parent is'.bgBlue, environment.parent)

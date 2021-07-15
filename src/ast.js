@@ -18,19 +18,16 @@ const expression = {
             right: left?.type === "binaryExpr" ? right : left?.right || right
         }
 
-        console.log('in binaryExpr'.red, binaryObj)
         return binaryObj;
     },
 
-    unaryExpr: function(operator, right) {
-        console.log('in unary expression operator'.red, operator, 'right '.red, right)
-        
+    unaryExpr: function(operator, right) {  
         const unaryObj = {
             type: "unaryExpr",
             operator: operator?.operator || operator,
             right: right
         }
-        console.log('in unary expression'.red, unaryObj)
+   
         return unaryObj;
     },
 
@@ -48,7 +45,7 @@ const expression = {
             type: "groupingExpr",
             group: group
         }
-        console.log('in grouping expression'.red, groupingObj);
+
         return groupingObj;
     },
 
@@ -58,7 +55,6 @@ const expression = {
             name: name
         }
 
-        console.log('in variable expression'.red, variableObj)
         return variableObj;
     },
 
@@ -69,7 +65,6 @@ const expression = {
             value: value
         }
 
-        console.log('in assign expression'.red, assignObj)
         return assignObj;
     },
 
@@ -81,7 +76,6 @@ const expression = {
             right: right
         }
 
-        console.log('inside the logical expr', logicalObj)
         return logicalObj;
     },
 
@@ -93,7 +87,6 @@ const expression = {
             arguments: arguments
         }
 
-        console.log('inside the call expression'.red, callObj)
         return callObj;
     }
 }
@@ -107,18 +100,15 @@ const statement = {
             expression: expr
         }
 
-        console.log('in expression statement'.red, expressionObj)
         return expressionObj;
     },
 
     printStmt: function(expr) {
-        console.log('in print statement this is value'.red, expr)
         const printObj = {
             type: "printStmt",
             expression: expr
         }
 
-        console.log('in print statement'.red, printObj)
         return printObj;
     },
 
@@ -128,7 +118,7 @@ const statement = {
             name: name,
             initializer: initializer
         }
-        console.log('in varDecl'.red, varObj)
+
         return varObj;
     },
 
@@ -138,7 +128,6 @@ const statement = {
             statements: statements
         }
 
-        console.log('inside block stmt'.red, util.inspect(blockObj, false, null, true))
         return blockObj;
     },
 
@@ -150,7 +139,6 @@ const statement = {
             elseBranch: elseBranch || null
         }
 
-        console.log('inside if stmt'.red, util.inspect(ifObj, false, null, true))
         return ifObj;
     },
 
@@ -161,7 +149,6 @@ const statement = {
             body: body
         }
 
-        console.log('inside while stmt'.red, util.inspect(whileObj, false, null, true))
         return whileObj;
     },
 
@@ -173,7 +160,6 @@ const statement = {
             body: body // array
         }
 
-        console.log('inside the function decl ast'.red, functionObj)
         return functionObj;
     },
 
@@ -184,7 +170,6 @@ const statement = {
             value: value
         }
 
-        console.log('inside the return stmt ast'.red, returnObj);
         return returnObj;
     }
 }

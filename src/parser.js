@@ -173,7 +173,7 @@ console.log('inside printStatement'.magenta, value)
             console.log('inside the while in block'.bgGreen)
             statements.push(this.declaration());
         }
-        console.log('hitting the block method'.bgGreen, statements)
+     
         this.consume(tokenType.RIGHT_BRACE, "Expect '}' after block.");
         return statements;
     }

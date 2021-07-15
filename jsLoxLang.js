@@ -85,11 +85,14 @@ class JsLox {
 
         const parser = new Parser(tokens, this);
         const statements = parser.parse();
-        console.log('expression parsed in JsLox', statements);
+        
+        if (this.hadError) return;
 
         const resolver = new Resolver(this.interpreter, this);
         resolver.resolve(statements)
-        
+        console.log('in Jslox after the resolver instance'.magenta, statements)
+        if (this.hadError) return;
+
         this.interpreter.interpret(statements);
     }
 

@@ -288,6 +288,7 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
     }
 
     resolve(expr, depth) {
+        console.log('inside interpreter at resolve'.bgGreen, expr, 'depth is', depth)
         this.locals.set(expr, depth);
     }
 
@@ -337,8 +338,9 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
     }
 
     lookUpVariable(name, expr) {
+        console.log('inside interpreter looktup var'.bgGreen, name, 'expr', expr, 'locals are '.bgGreen, this.locals)
         let distance = this.locals.get(expr);
-        if (distance !== null) {
+        if (distance !== null || distance !== undefined) {
             return this.env.getAt(distance, name.lexeme);
         } else {
             return this.globalEnv[name];
