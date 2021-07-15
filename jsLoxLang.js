@@ -59,14 +59,12 @@ class JsLox {
         rl.setPrompt("> ");
         rl.prompt()
         rl.on("line", userInput => {
-            // inputStr += userInput;   // Figure out a way to save multiple values and parse them in order? add EOF after each?
-            // process.stdout.write(inputStr)
-            // this.run(inputStr);
             let currentInput = '';
             currentInput += userInput;
             process.stdout.write(currentInput);
             this.run(currentInput)
             this.hadError = false;
+            
             rl.prompt();
         })
         

@@ -4,8 +4,8 @@ This is my version of the Lox language from Crafting Interpreters in Javascript.
 I wrote most of my notes in this ReadMe, so this ReadMe shows what I understand from writing this interpreter, some definitions, some important notes from the author of Crafting Inpreters about the way certains parts are implemented, as well as useful notes on how I implemented it in Js.
 
 ## JsLox class - Entry file
-  - Main method: "directs" the given input: uses the array length to return an error, read or run the prompt.
-  - runFile method: read the file, transforms the bytes to a string. Needed if we read code that's already written?
+  - Main method: "directs" the given input: uses the array length to return an error, read from file or run the prompt. When creating an instance of `JsLox` at the bottom of `jsLoxLang.js`, we pass it the arguments from the command line. In the constructor of `JsLox`, `this.rawCode` takes those arguments and removes the first two (which are the paths for Node and the program `jsLoxLang.js`, so we can discard them).
+  - runFile method: read the file, transforms the bytes to a string. 
   - runPrompt method: takes input from standard input, transforms it to a buffer. 
     In a for loop, we print each line or break out of the loop if there is no line.
   - run method: scans each line to create tokens.
@@ -84,13 +84,16 @@ Inside the parser, we look for the `var` keyword, , a variable name, and then fo
 We need to bind the variable and its value. The easiest way is to create key-value pairs. 
 We create an instance of the Environment class when the Interpreter is used. This instance will be stored outside of the Interpreter class and is the **global scope**.<br>
 For block scope, a new instance is created (when the block method fires) and the **current** environment (`this.env`) is passed to the constructor. Results an object with nested objects, inside nested objects.
+In the 'Resolving and binding' chapter, we will have 2 ways of reading and assigning to the environment (see below).
 
 ### Assignment
-In the parser, we will call in `expression()` the assignment method, that will run the expression to check left and right side. It looks for an equal sign, checks if the type of expression is `variableExpr`, and perform the change for `assignExpr` type.<br>
+In the parser, we will call inside `expression()` the assignment method, that will run the expression to check left and right side. It looks for an equal sign, checks if the type of expression is `variableExpr`, and perform the change for `assignExpr` type.<br>
 In the environment, to assign a value, we *recursively* look for the correct variable name, starting at the current level (current environment), and going outside to the previous environment(s) until we find it.
+Once working on the 'Resolving and binding' chapter, an assignment can be done 2 ways. The first one is as decribed above. The second one uses the `Resolver` class, which then give the `Environment` class 3 new methods (described below in 'Resolving and binding'). 
 
 ### Read the environment
 Like the previous paragraph Assignment, we read the environment and retrieve values by recursively looking at the current environment and its parents, until we find the variable we are looking for.
+(See below in the 'Resolving and binding' section for changes brought to the environment).
 
 ### Scope
 The scope is created from `{}` (or blocks). Once the `blockStmt` node is created, the interpreter will create a new instance of the Environment class once the `getBlockStmt()` function is fired.  
@@ -149,4 +152,5 @@ To allow for closures to happen and look at the current environment, the `LoxFun
 
 ### Resolver class
 This class will be between the parser and interpreter. It will walk down the syntax tree and resolve any variable in it, allowing for variables to be available ahead of time, so closures can find the correct ones.<br>
-Since this class will down the syntax tree, it will implement some of them, just like the interpreter does.
+The interpreter gets its own local environment, directly from the `resolve` method (inside the `Resolve` class). These locals are then available in the `this.locals` inside the interpreter, and their environment may be accessed using the following methods: `getAt`, `assignAt`, and `ancestor` (helper method).
+The `ancestor` methods uses the 'distance' set in the `Resolver` class inside `resolveLocal`, which gives a number corresponding to the level (depth) of the expression. 
