@@ -3,6 +3,11 @@
 This is my version of the Lox language from Crafting Interpreters in Javascript.
 I wrote most of my notes in this ReadMe, so this ReadMe shows what I understand from writing this interpreter, some definitions, some important notes from the author of Crafting Inpreters about the way certains parts are implemented, as well as useful notes on how I implemented it in Js.
 
+## Demo
+1. REPL demo
+2. Showing inside each jsLoxLang files
+3. Running each jsLoxLang file
+
 <img src="./ezgif.com-gif-maker.gif" alt="jsLoxLang demo" width="auto" height="400">
 
 ## JsLox class - Entry file
