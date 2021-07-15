@@ -6,7 +6,7 @@ I wrote most of my notes in this ReadMe, so this ReadMe shows what I understand 
 ## JsLox class - Entry file
   - Main method: "directs" the given input: uses the array length to return an error, read or run the prompt.
   - runFile method: read the file, transforms the bytes to a string. Needed if we read code that's already written?
-  - runPrompt method: takes input from standard input, transforms it to a buffer. Needed when we're typing?
+  - runPrompt method: takes input from standard input, transforms it to a buffer. 
     In a for loop, we print each line or break out of the loop if there is no line.
   - run method: scans each line to create tokens.
   - error and report methods: "handles" or display errors to the user with a line number and a message.

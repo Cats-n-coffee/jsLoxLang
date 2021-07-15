@@ -164,7 +164,6 @@ class Scanner {
 
     // Creates a float with 2 digits after the floating point
     makeAFloat(num) {
-        console.log('inside make a float', num)
         return parseFloat(parseFloat(num).toFixed(2))
     }
 
@@ -179,9 +178,7 @@ class Scanner {
         if (type === null || type === undefined) {
             type = tokenType.IDENTIFIER;
         }
-        console.log('type is ', type, 'text is', text)
-        this.addTokenToArr(type, text); // Do we need only the type? if we do: this.addToken will be sufficient
-        // Do we need the literal value for identifiers?
+        this.addTokenToArr(type, text); 
     }
 
     // Checks if the character is in the alphabet (lower or upper case) or _

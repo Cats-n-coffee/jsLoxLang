@@ -4,8 +4,6 @@ We need different functions for each type of node/expression.
 The accept function will "direct" each incoming expression to the appropriate
 function by matching the type available on the incoming object.
 */
-const util = require('util');
-const color = require('colors');
 
 // ------------------------------- Expressions ------------------------------
 const expression = {

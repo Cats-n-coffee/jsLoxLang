@@ -13,7 +13,7 @@ const { Resolver } = require('./src/resolver');
 
 class JsLox {
     constructor(rawCode) {
-        this.rawCode = rawCode;
+        this.rawCode = rawCode.slice(2);
         this.hadError = false;
         this.interpreter = new Interpreter(this);
     }
@@ -28,9 +28,7 @@ class JsLox {
             process.emit('error')
         }
         else if (this.rawCode.length === 1) {
-            console.log('good length, let\'s read', this.rawCode);
             this.runFile(this.rawCode[0]);
-            // In the Java example Charset.defaultCharset() returns the charset for the machine (OS) running the program
         }
         else {
             console.log('let\s run a prompt with this', this.rawCode);
@@ -43,7 +41,7 @@ class JsLox {
         if (this.hadError === true) {
             process.exit(0)
         }
-        const fileContents = fs.readFileSync(givenArg, 'utf-8');
+        const fileContents = fs.readFileSync(`/Users/luciemacaigne/Desktop/jsLoxLang/jsLoxTests/${givenArg}`, 'utf-8');
         console.log('reading the file', fileContents)
         this.run(fileContents)
     }
@@ -118,7 +116,7 @@ class JsLox {
     }
 }
 
-const jsLoxInstance = new JsLox([]);
+const jsLoxInstance = new JsLox(process.argv);
 jsLoxInstance.main();
 
 // https://stackoverflow.com/questions/61394928/get-user-input-through-node-js-console

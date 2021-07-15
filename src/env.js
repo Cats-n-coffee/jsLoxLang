@@ -24,42 +24,39 @@ class Environment {
             console.log('at readEnv'.bgGreen, getVal)
             return getVal;
         }
-
-        // if (this[variable] !== undefined) {
-        //     return this[variable]
-        // }
-        //let env = this.parent; // either null or aother env
-        //while (env !== null) {
-            // console.log('checking env'.bgMagenta, env, 'env varaible', env.parent[variable], 'this variable', env[variable])
-            
-            // if (env.parent[variable] !== undefined) {
-            //     console.log('found variable'.red, env[variable])
-            //     return env.parent[variable];
-            // }
-            // env = this.parent;
-            // console.log('checking env second'.bgMagenta, env)
-       //} 
-        // if (this[variable] === undefined && this.parent) {
-        //     console.log('cant find it')
-        //     return this.parent;
-        // }
     
         throw new RuntimeError(variable, "Undefined variable '" + variable.lexeme + "' .")
     }
 
     getAt(distance, name) {
         console.log('inside environm at getAt'.bgGreen, distance, 'name', name);
-        console.log('getAt second line',typeof this.ancestor(distance))
+        console.log('getAt second line',typeof this.ancestor(distance)[name])
         return this.ancestor(distance)[name];
     }
 
     ancestor(distance) {
         console.log('in ancestor'.magenta, distance)
         let environment = this;
-        for (let i = 0; i < distance; i += 1) {
-            console.log('inside the ancestor method, environment.parent is'.bgBlue, environment.parent)
+        console.log('in ancestor the environment is'.magenta, environment)
+        if (distance === 0) {
+            environment = environment;
+        }
+        if (distance === 1) {
             environment = environment.parent;
         }
+        else {
+            for (let i = 1; i < distance; i += 1) { // let i = 1; i < distance; i += 1
+                console.log('inside the ancestor method, environment.parent is'.bgBlue, environment.parent, 'i is ', i)
+                if (environment.parent !== null) {
+                    environment = environment.parent;
+                }
+                else {
+                    console.log('in ancesrtor parent is null'.magenta, environment, 'i is', i)
+                    environment = environment;
+                }
+            }
+        }
+        
         return environment;
     }
 
@@ -74,7 +71,9 @@ class Environment {
     }
 
     assignAt(distance, name, value) {
-        this.ancestor(distance).values[name.lexeme] = value;
+        console.log('inside environment in assignAt'.magenta, distance, 'name is', name, 'value', value)
+        console.log('in assignat with ancestor'.magenta, this.ancestor(distance))
+        return this.ancestor(distance)[name.lexeme] = value;
     }
 
     iterateAndRead(obj, variable) {

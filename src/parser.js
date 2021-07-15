@@ -40,7 +40,6 @@ class Parser {
     }
 
     statement() {
-        console.log('inside statement'.red, this.peek())
         if (this.match([tokenType.FOR])) return this.forStatement();
         if (this.match([tokenType.IF])) return this.ifStatement();
         if (this.match([tokenType.PRINT])) return this.printStatement();
@@ -58,14 +57,12 @@ class Parser {
 // ------------------------------------ STATEMENTS / ASSIGNMENT ---------------------------------------
     printStatement() {
         const value = this.expression();
-console.log('inside printStatement'.magenta, value)
         this.consume(tokenType.SEMICOLON, "Expect ';' after value.")
         return statement.printStmt(value);
     }
 
     expressionStatement() {
         const expr = this.expression();
-        console.log('inside expressionStatement'.magenta, expr)
         this.consume(tokenType.SEMICOLON, "Expect ';' after expression.")
         return statement.expressionStmt(expr)
     }
@@ -135,7 +132,6 @@ console.log('inside printStatement'.magenta, value)
 
             if (expr.type === 'variableExpr') {
                 let name = expr.name;
-                console.log('inside parser at assignment'.yellow, expr, 'name is'.yellow, name)
                 return expression.assignExpr(name, value)
             }
             this.error(equals, "Invalid assignment target.");
@@ -170,7 +166,6 @@ console.log('inside printStatement'.magenta, value)
         const statements = [];
 
         while (!this.check(tokenType.RIGHT_BRACE) && !this.isAtEnd()) {
-            console.log('inside the while in block'.bgGreen)
             statements.push(this.declaration());
         }
      
@@ -251,14 +246,14 @@ console.log('inside the for statement in parser'.bgCyan)
       
             expr = expression.binaryExpr(expr, operator, right);
         }
-        console.log('in parser equality'.bgMagenta, expr)
+    
         return expr;
     }
 
     // Checks for comparison tokens
     comparison() {
         var expr = this.term();
-        console.log('inside comparison'.bgMagenta, expr)
+        
         while(this.match([tokenType.GREATER, tokenType.GREATER_EQUAL, tokenType.LESS, tokenType.LESS_EQUAL])) {
             const operator = this.previous();
             const right = this.term();

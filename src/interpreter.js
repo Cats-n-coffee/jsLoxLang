@@ -290,6 +290,7 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
     resolve(expr, depth) {
         console.log('inside interpreter at resolve'.bgGreen, expr, 'depth is', depth)
         this.locals.set(expr, depth);
+        console.log('in interpreter at resolve'.cyan, this.locals)
     }
 
     executeBlock(statements, scopeEnv) {
@@ -362,19 +363,3 @@ console.log('this the callee at getcallexpr'.bgMagenta, callee, 'expr.callee'.bg
 }
 
 module.exports = { Interpreter }
-
-// var a =1; {a =5; print a;}
-// var a = 1; while(a < 5) {a = a + 1; print "hi";}
-// var a =1; {var b =5; {print a;}}
-// var a = 1; {var b = 5; {var c = 8;{print a;}}}
-// var a = 0; var temp = 0; for (var i = 1; a < 5; i = temp + i){print a; temp = a; a = i;}
-// var a = 1; a = a + 1; a = a + 1; print a;
-// var a = 1; for (var i = 1;a < 5; i = i + 1){ print i; print a;}
-// for (var i = 0; i < 5;i = i + 1)print i;
-
-// fun hi(first){print "Hi" + first;} hi("pretty");
-// --> infinite loop:  fun fib(n){if (n <= 1) return n; return fib(n - 2) + fib(n - 1);} for (var i =0; i < 20; i = i + 1){print fib(i);}
-// fun fib(n){if (n <= 1) return n; return fib(n - 2) + fib(n - 1);} fib(10);
-// fun makeCounter(){var i = 0; fun count(){ i = i + 1; print i;} return count;} var counter = makeCounter(); counter(); counter();
-
-// var a ="global"; fun showA(){print a;} showA(); var a = "block"; showA();
