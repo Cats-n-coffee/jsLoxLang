@@ -5,8 +5,8 @@ I wrote most of my notes in this ReadMe, so this ReadMe shows what I understand 
 
 ## Demo
 1. REPL demo
-2. Showing inside each jsLoxLang files
-3. Running each jsLoxLang file
+2. Showing and running [prog.lox](https://github.com/Cats-n-coffee/jsLoxLang/blob/master/jsLoxTests/prog.lox)
+3. Showing and running [prog2.lox](https://github.com/Cats-n-coffee/jsLoxLang/blob/master/jsLoxTests/prog2.lox)
 
 <img src="./ezgif.com-gif-maker.gif" alt="jsLoxLang demo" width="auto" height="400">
 
