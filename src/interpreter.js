@@ -55,8 +55,8 @@ class Interpreter {
         }
         catch (err) {
             //console.log('error at runtime inside interpreter'.bgRed, err)
-            //console.log(new RuntimeError(statements, "Unable to read input.", "In interpret, statements might be undefined"))
-            return new RuntimeError(expr, "Unable to read input.");
+            console.log(new RuntimeError(statements, "Unable to read input.", "In interpret, statements might be undefined"))
+            //return new RuntimeError(expr, "Unable to read input.");
         }
     }
 // ----------------------------- STATEMENTS / ASSIGNMENT EVALUATION -------------------------------

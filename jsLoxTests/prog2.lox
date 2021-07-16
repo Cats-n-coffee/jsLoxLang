@@ -1,7 +1,18 @@
-var a = 1; 
-while(a < 5) {
-    a = a + 1; 
-    print "hi";
+fun num(y) {
+    var n = 1;
+    while (n < 5) {
+        n = n + 1;
+        print "while loop";
+    }
+    return y + 1;
 }
 
-// should print "hi" 4 times
+fun add(x) {
+    return x + num(1);
+}
+
+print add(1) + add(2);
+
+// we should see 'while loop' printed 8 times, since the 
+// 'add()' function runs twice (and has num() inside its body)
+// it should also print 7
