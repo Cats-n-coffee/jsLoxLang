@@ -31,25 +31,20 @@ class JsLox {
             this.runFile(this.rawCode[0]);
         }
         else {
-            //console.log('let\s run a prompt with this', this.rawCode);
             this.runPrompt();
         }
     }
 
     runFile(givenArg) {
-        //console.log('inside the runfile function', givenArg)
         if (this.hadError === true) {
             process.exit(0)
         }
         const fileContents = fs.readFileSync(`/Users/luciemacaigne/Desktop/jsLoxLang/jsLoxTests/${givenArg}`, 'utf-8');
-        //console.log('reading the file', fileContents)
         this.run(fileContents)
     }
 
     runPrompt() {
 
-        //let inputStr = '';
-        
         const rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout
@@ -60,7 +55,6 @@ class JsLox {
         rl.on("line", userInput => {
             let currentInput = '';
             currentInput += userInput;
-            //process.stdout.write(currentInput);
             this.run(currentInput)
             this.hadError = false;
             
@@ -92,7 +86,6 @@ class JsLox {
     }
 
     error(line, message) {
-        //console.log('in the error method in jslox')
         return this.report(line, "", message)
     }
 

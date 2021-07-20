@@ -21,7 +21,6 @@ class Resolver {
 
     // Checks the node type and redirects to the correct method
     lookAtNodeType(expr) {
-        //console.log('inside resolver lookign at types'.bgYellow, expr)
         switch(expr.type) {
             case "blockStmt": return this.getBlockStmt(expr); 
             case "varDecl": return this.getVarDecl(expr);
@@ -68,13 +67,11 @@ class Resolver {
     }
 
     getExpressionStmt(stmt) {
-        //console.log('inside resolver at expression stmt', stmt.expression)
         this.resolve(stmt.expression);
         return null;
     }
 
     getFunctionDecl(stmt) {
-        //console.log('inside fucntiondeclaration at resolver'.blue, stmt)
         this.declare(stmt.name);
         this.define(stmt.name);
 
@@ -108,34 +105,28 @@ class Resolver {
     }
 
     getVariableExpr(expr) {
-        //console.log('in resolver inside variable expr first line'.bgCyan, expr, 'scopes', this.scopes)
         if ((!this.scopes.length === 0) && (this.scopes[-1][expr.name.lexeme] === false)) {
             this.loxInstance.error(expr.name, "Can't read local variable in its own initializer");
         }
-        //console.log('inside resolver in getvariable expr'.bgCyan, expr, 'expr.name', expr.name)
         this.resolveLocal(expr, expr.name);
         return null;
     }
 
     getAssignExpr(expr) {
-        //console.log('inside resolver in getassign expr'.bgCyan, expr, 'expr.name', expr.name)
         this.resolve(expr.value);
         this.resolveLocal(expr, expr.name);
         return null;
     }
 
     getCallExpr(expr) {
-        //console.log('inside the call expr in resolver'.bgCyan, expr)
         this.resolve(expr.callee);
         for (let i = 0; i < expr.arguments.length; i += 1) {
-            //console.log('inside the resolver at get call expr'.bgCyan, expr.arguments[i])
             this.resolve(expr.arguments[i]);
         }
         return null;
     }
 
     getBinaryExpr(expr) {
-        //console.log('inside resolver at binary'.bgCyan, expr)
         this.resolve(expr.left);
         this.resolve(expr.right);
         return null;
@@ -163,21 +154,17 @@ class Resolver {
 
     // ---------------------------------- Helper methods ----------------------------------
     resolve(statements) {
-        //console.log('inside the resolver at resolve'.blue, 'type of', typeof statements, 'my stmt is'.blue, statements)
         let expr;
         if (statements === undefined) return;
         if (!statements.length) {
             this.lookAtNodeType(statements)
         }
-        // if (statements.length < 1) --> returns false and doesn't work
-        if (statements.length === undefined || statements.length === 0) { // --> this works, am I stupid?
-            //console.log('inside the if stmt for length 0'.bgCyan, statements)
+        if (statements.length === undefined || statements.length === 0) { 
             this.lookAtNodeType(statements)
         }
         if (statements !== undefined) {
             for (let i = 0; i < statements.length; i += 1) {
                 expr = statements[i];
-                //console.log('each expr'.bgCyan,expr)
                 this.lookAtNodeType(expr)
             }
         }
@@ -192,7 +179,6 @@ class Resolver {
     }
 
     declare(name) {
-        //console.log('inside the resolver at decalre first line'.blue, name)
         //if (this.scopes.length === 0) return;
         let scope = {};
         this.scopes.push(scope);
@@ -200,22 +186,17 @@ class Resolver {
             this.loxInstance.error(name, "A variable with this name is already in this scope.");
         }
         scope[name.lexeme] = false;
-        //console.log('in resolver inside the declare scope'.bgBlue, scope, 'all scopes',  this.scopes)
     }
 
     define(name) {
-        //console.log('inside the resolver at define scope'.blue, this.scopes, this.scopes[this.scopes.length -1])
         if (this.scopes.length === 0) return;
         this.scopes[this.scopes.length -1][name.lexeme] = true;
         
     }
 
     resolveLocal(expr, name) {
-        //console.log('inside the resolver at resolve local'.bgCyan, expr, 'name is '.blue, name)
         for (let i = this.scopes.length - 1; i >= 0; i--) {
-            //console.log('this is a scope'.bgGreen, this.scopes[i], 'all scopes'.bgGreen, this.scopes)
             if (this.scopes[i].hasOwnProperty(name.lexeme)) {
-                //console.log('in resvolve local'.bgGreen, expr, 'scope length', this.scopes.length - 1 - i)
                 this.interpreter.resolve(expr, this.scopes.length - 1 - i);
                 return;
             }

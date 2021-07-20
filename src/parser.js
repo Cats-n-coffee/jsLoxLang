@@ -32,7 +32,6 @@ class Parser {
             return this.statement()
         }
         catch (err) {
-            // Parse Error class??
             console.log('error in parse declaration', err)
             this.synchronize();
             return null;
@@ -188,7 +187,6 @@ class Parser {
 
     forStatement() {
         this.consume(tokenType.LEFT_PAREN, "Expect '(' after 'for'.");
-//console.log('inside the for statement in parser'.bgCyan)
         // Creates the initializer
         let initializer;
         if (this.match([tokenType.SEMICOLON])) {
@@ -294,7 +292,7 @@ class Parser {
 
             return expression.unaryExpr(operator, right);
         }
-        return this.call(); // change from this.primary() before implementing functions
+        return this.call(); 
     }
 
     call() {
@@ -308,7 +306,6 @@ class Parser {
                 break;
             }
         }
-        //console.log('inside the call in parser', expr)
         return expr;
     }
 

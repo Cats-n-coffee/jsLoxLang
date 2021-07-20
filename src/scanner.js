@@ -22,7 +22,6 @@ class Scanner {
         }
 
         this.tokens.push(new Token(tokenType.EOF, "", null, this.line));
-        //console.log('all the tokens', this.tokens)
         return this.tokens;
     }
 
